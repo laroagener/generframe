@@ -4,6 +4,9 @@
  * and open the template in the editor.
  */
 package laroa;
+import config.Session;
+import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -16,7 +19,19 @@ public class UProfile extends javax.swing.JFrame {
      */
     public UProfile() {
         initComponents();
-    }
+           loadUserProfile();
+        }
+    private void loadUserProfile() {
+    id1.setText("" + Session.u_id);
+    username.setText(Session.username);
+    email.setText(Session.email);
+    status.setText(Session.status);
+    type.setText(Session.type);
+
+   
+}
+
+   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -35,16 +50,15 @@ public class UProfile extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTextPane3 = new javax.swing.JTextPane();
         jLabel7 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
+        status = new javax.swing.JLabel();
+        id1 = new javax.swing.JLabel();
+        username = new javax.swing.JLabel();
+        email = new javax.swing.JLabel();
+        type = new javax.swing.JLabel();
+        status1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -59,7 +73,7 @@ public class UProfile extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel2.setText("Account ID:");
-        jDesktopPane1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 100, 130, 20));
+        jDesktopPane1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 100, 110, 20));
 
         jLabel3.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel3.setText("User Status:");
@@ -78,10 +92,6 @@ public class UProfile extends javax.swing.JFrame {
         jButton4.setText("LogIn");
         jDesktopPane1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 40, 70, 30));
 
-        jScrollPane3.setViewportView(jTextPane3);
-
-        jDesktopPane1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 360, 120, 40));
-
         jLabel7.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jDesktopPane1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 340, -1, -1));
 
@@ -90,28 +100,14 @@ public class UProfile extends javax.swing.JFrame {
         jDesktopPane1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 200, -1, 20));
 
         jLabel6.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jLabel6.setText("Phone Number:");
+        jLabel6.setText("Type:");
         jDesktopPane1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 250, -1, 20));
-
-        jTextField1.setText("Active");
-        jDesktopPane1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 300, 300, 30));
-
-        jTextField2.setText("ASDASDASD");
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
-            }
-        });
-        jDesktopPane1.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 100, 300, 30));
-
-        jTextField3.setText("laroa");
-        jDesktopPane1.add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 150, 300, 30));
-
-        jTextField4.setText("laroa@gmail.com");
-        jDesktopPane1.add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 200, 300, 30));
-
-        jTextField5.setText("09659500506");
-        jDesktopPane1.add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 250, 300, 30));
+        jDesktopPane1.add(status, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 290, 180, 40));
+        jDesktopPane1.add(id1, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 90, 180, 40));
+        jDesktopPane1.add(username, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 140, 180, 40));
+        jDesktopPane1.add(email, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 190, 180, 40));
+        jDesktopPane1.add(type, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 240, 180, 40));
+        jDesktopPane1.add(status1, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 290, 180, 40));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -130,10 +126,6 @@ public class UProfile extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -171,6 +163,8 @@ public class UProfile extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel email;
+    private javax.swing.JLabel id1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -182,12 +176,9 @@ public class UProfile extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextPane jTextPane3;
+    private javax.swing.JLabel status;
+    private javax.swing.JLabel status1;
+    private javax.swing.JLabel type;
+    private javax.swing.JLabel username;
     // End of variables declaration//GEN-END:variables
 }

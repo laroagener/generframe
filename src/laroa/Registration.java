@@ -1,8 +1,5 @@
 package laroa; // Ensure this matches your package
-import config.config;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import config.conf;
 import javax.swing.JOptionPane;
 
 public class Registration extends javax.swing.JFrame {
@@ -87,37 +84,28 @@ public class Registration extends javax.swing.JFrame {
     }// </editor-fold>                        
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+     conf conf = new conf();
 
-    String username = user.getText();
-    String userEmail = email.getText();
+    String sql = "INSERT INTO tbl_users(username, email, password, type, status) VALUES (?, ?, ?, ?, ?)";
     String password = new String(pass.getPassword());
 
-    if (username.isEmpty() || userEmail.isEmpty() || password.isEmpty()) {
+    if (user.getText().isEmpty() || email.getText().isEmpty() || password.isEmpty()) {
         JOptionPane.showMessageDialog(this, "All fields are required!");
         return;
     }
 
-    String sql = "INSERT INTO users(username, email, password, role) VALUES (?, ?, ?, ?)";
+    conf.addRecord(sql, user.getText(),email.getText(),password,"admin", "Pending");
+        
 
-    try (Connection conn = config.connect();
-         PreparedStatement pst = conn.prepareStatement(sql)) {
+    JOptionPane.showMessageDialog(this, "Registration successful!");
 
-        pst.setString(1, username);
-        pst.setString(2, userEmail);
-        pst.setString(3, password);
-        pst.setString(4, "user");
-
-        pst.executeUpdate();
-
-        JOptionPane.showMessageDialog(this, "Registration successful! Please log in.");
-
-        new LogIn().setVisible(true);
-        this.dispose();
-
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Email already exists or DB error.");
+    // NAVIGATION
+    login login = new login();
+    login.setVisible(true);
+    this.dispose();
     }
-}
+    
+    
                             
 
     public static void main(String args[]) {
