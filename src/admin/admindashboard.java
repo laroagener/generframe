@@ -7,6 +7,7 @@ package admin;
 
 import javax.swing.JOptionPane;
 import laroa.UProfile;
+import laroa.login;
 
 /**
  *
@@ -30,7 +31,8 @@ public class admindashboard extends javax.swing.JFrame {
 
     initComponents(); // IMPORTANT: AFTER CHECK
 
-    name.setText(config.Session.username);
+    ((javax.swing.JLabel)jLabel3).setText(config.Session.username);
+// or    ((javax.swing.JTextField)name).setText(config.Session.username);
 
         initComponents();
     }
@@ -46,16 +48,16 @@ public class admindashboard extends javax.swing.JFrame {
     private void initComponents() {
 
         jDesktopPane1 = new javax.swing.JDesktopPane();
-        jLabel1 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        account = new javax.swing.JButton();
-        jButton10 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
+        jButton8 = new javax.swing.JButton();
+        jButton10 = new javax.swing.JButton();
+        jButton11 = new javax.swing.JButton();
+        jButton12 = new javax.swing.JButton();
+        jTextField1 = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -63,75 +65,70 @@ public class admindashboard extends javax.swing.JFrame {
         jDesktopPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jDesktopPane1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setBackground(new java.awt.Color(255, 51, 51));
-        jLabel1.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/laroa/images/Grey Minimalist Bookstore Business Logo.png"))); // NOI18N
-        jDesktopPane1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 70, 500, 500));
-
-        jButton4.setText("Dashboard Home");
+        jButton4.setText("Delete");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 170, 30));
+        jDesktopPane1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 70, 90, 30));
 
-        jButton5.setText("Inventory Management");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-        jDesktopPane1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 170, 30));
+        jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("DASHBOARD");
+        jDesktopPane1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 20, -1, -1));
 
-        jButton6.setText("Order Tracking");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-        jDesktopPane1.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, 170, 30));
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/laroa/images/profile.jpg"))); // NOI18N
+        jLabel3.setText("jLabel3");
+        jDesktopPane1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 0, 210, 200));
 
-        jButton7.setText("Customer Database");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-        jDesktopPane1.add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 280, 170, 30));
-
-        jButton8.setText("Revievs & Ratings");
+        jButton8.setText("Home");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton8ActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 330, 170, 30));
+        jDesktopPane1.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 70, 90, 30));
 
-        jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("DASHBOARD");
-        jDesktopPane1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 30, -1, -1));
-
-        account.setText("Account Settings");
-        account.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                accountActionPerformed(evt);
-            }
-        });
-        jDesktopPane1.add(account, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, 170, 30));
-
-        jButton10.setText("Settings");
+        jButton10.setText("Users");
         jButton10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton10ActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(jButton10, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 380, 170, 30));
+        jDesktopPane1.add(jButton10, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 70, 90, 30));
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/laroa/images/profile.jpg"))); // NOI18N
-        jLabel3.setText("jLabel3");
-        jDesktopPane1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 0, 210, 200));
+        jButton11.setText("Edit");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
+        jDesktopPane1.add(jButton11, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 70, 90, 30));
+
+        jButton12.setText("Create");
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
+        jDesktopPane1.add(jButton12, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 70, 90, 30));
+        jDesktopPane1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 70, 110, 30));
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        jDesktopPane1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 130, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -161,32 +158,21 @@ public class admindashboard extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton7ActionPerformed
-
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton8ActionPerformed
 
-    private void accountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accountActionPerformed
-        UProfile up = new UProfile();
-        up.setVisible(true);
-        this.dispose();
-        
-    }//GEN-LAST:event_accountActionPerformed
-
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton12ActionPerformed
 
     
     /**
@@ -225,16 +211,16 @@ public class admindashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton account;
     private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JDesktopPane jDesktopPane1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }

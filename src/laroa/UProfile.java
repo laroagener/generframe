@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package laroa;
+
 import config.Session;
 import javax.swing.JOptionPane;
 
@@ -47,7 +48,6 @@ public class UProfile extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
@@ -59,6 +59,8 @@ public class UProfile extends javax.swing.JFrame {
         email = new javax.swing.JLabel();
         type = new javax.swing.JLabel();
         status1 = new javax.swing.JLabel();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -83,10 +85,12 @@ public class UProfile extends javax.swing.JFrame {
         jLabel5.setText("User Name:");
         jDesktopPane1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 150, -1, -1));
 
-        jButton2.setText("User");
-        jDesktopPane1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 40, 70, 30));
-
         jButton3.setText("Home");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
         jDesktopPane1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, 70, 30));
 
         jButton4.setText("LogIn");
@@ -109,6 +113,12 @@ public class UProfile extends javax.swing.JFrame {
         jDesktopPane1.add(type, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 240, 180, 40));
         jDesktopPane1.add(status1, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 290, 180, 40));
 
+        jButton5.setText("User");
+        jDesktopPane1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 40, 70, 30));
+
+        jButton6.setText("Admin");
+        jDesktopPane1.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 40, 70, 30));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -126,6 +136,10 @@ public class UProfile extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -165,9 +179,10 @@ public class UProfile extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel email;
     private javax.swing.JLabel id1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
