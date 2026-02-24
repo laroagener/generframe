@@ -5,6 +5,7 @@
  */
 package admin;
 
+import javax.swing.JOptionPane;
 import laroa.UProfile;
 
 /**
@@ -17,8 +18,23 @@ public class admindashboard extends javax.swing.JFrame {
      * Creates new form admindashboard
      */
     public admindashboard() {
+      if (config.Session.u_id == 0) {
+
+        JOptionPane.showMessageDialog(null, "Please login first!");
+        login log = new login();
+        log.setVisible(true);
+        this.dispose();
+
+        
+    }
+
+    initComponents(); // IMPORTANT: AFTER CHECK
+
+    name.setText(config.Session.username);
+
         initComponents();
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.

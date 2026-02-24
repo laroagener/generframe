@@ -75,8 +75,8 @@ public String authenticate(String sql, Object... values) {
 
         try (ResultSet rs = pstmt.executeQuery()) {
             if (rs.next()) {
-                Session.u_id = rs.getInt("a_id");
-            Session.username = rs.getString("name");
+                Session.u_id = rs.getInt("u_id");
+            Session.username = rs.getString("username");
             Session.email = rs.getString("email");
             Session.type = rs.getString("type");
             Session.status = rs.getString("status");

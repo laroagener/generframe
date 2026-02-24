@@ -143,7 +143,7 @@ String passwordInput = new String(pass.getPassword());
 
 String sql = "SELECT * FROM tbl_users WHERE email = ? AND password = ? AND status = ?";
 
-String usersType = c.authenticate(sql, emailInput, passwordInput, "Active");
+String usersType = c.authenticate(sql, email.getText(), pass.getText(), "Active");
 
 
 if (usersType != null) {
