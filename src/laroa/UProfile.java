@@ -60,7 +60,8 @@ public class UProfile extends javax.swing.JFrame {
         type = new javax.swing.JLabel();
         status1 = new javax.swing.JLabel();
         jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -116,8 +117,15 @@ public class UProfile extends javax.swing.JFrame {
         jButton5.setText("User");
         jDesktopPane1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 40, 70, 30));
 
-        jButton6.setText("Admin");
-        jDesktopPane1.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 40, 70, 30));
+        jPanel1.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel8.setFont(new java.awt.Font("Arial Black", 1, 14)); // NOI18N
+        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel8.setText("ADMIN");
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 11, 250, 28));
+
+        jDesktopPane1.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 10, 250, 50));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -182,7 +190,6 @@ public class UProfile extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -191,6 +198,8 @@ public class UProfile extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel status;
     private javax.swing.JLabel status1;
     private javax.swing.JLabel type;

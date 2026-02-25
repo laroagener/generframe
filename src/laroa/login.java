@@ -154,7 +154,7 @@ if (usersType != null) {
         ad.setVisible(true);
     } else {
         // Assuming you have a separate dashboard for regular users
-        UProfile ud = new UProfile(); 
+        admindashboard ud = new admindashboard();
         ud.setVisible(true);
     }
     this.dispose(); 

@@ -3,41 +3,70 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package admin;
+package user;
 
+import config.Session;
+import config.conf;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import laroa.UProfile;
-import laroa.login;
-import user.usertbl;
 
 /**
  *
- * @author USER33
+ * @author USER23
  */
-public class admindashboard extends javax.swing.JFrame {
+public class usertbl extends javax.swing.JFrame {
 
     /**
-     * Creates new form admindashboard
+     * Creates new form usertbl
      */
-    public admindashboard() {
-      if (config.Session.u_id == 0) {
-
+    public usertbl() {
+       if (Session.u_id == 0) {
         JOptionPane.showMessageDialog(null, "Please login first!");
-        login log = new login();
+        laroa.login log = new laroa.login();
         log.setVisible(true);
         this.dispose();
-
-        
+        return;
     }
-
-    initComponents(); // IMPORTANT: AFTER CHECK
-
-    ((javax.swing.JLabel)jLabel3).setText(config.Session.username);
-// or    ((javax.swing.JTextField)name).setText(config.Session.username);
-
+    
         initComponents();
+        loadUsersTable(); // Load data when form opens
     }
-
+    private void loadUsersTable() {
+    DefaultTableModel model = (DefaultTableModel) userstbl.getModel();
+    model.setRowCount(0); // Clear existing data
+    
+    // Set column headers
+    model.setColumnIdentifiers(new String[]{"ID", "Username", "Email", "Type", "Status"});
+    
+    try {
+        Connection conn = conf.connectDB();
+        String sql = "SELECT u_id, username, email, type, status FROM tbl_users";
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        ResultSet rs = pstmt.executeQuery();
+        
+        while (rs.next()) {
+            Object[] row = {
+                rs.getInt("u_id"),
+                rs.getString("username"),
+                rs.getString("email"),
+                rs.getString("type"),
+                rs.getString("status")
+            };
+            model.addRow(row);
+        }
+        
+        rs.close();
+        pstmt.close();
+        conn.close();
+        
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error loading users: " + e.getMessage());
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -49,17 +78,16 @@ public class admindashboard extends javax.swing.JFrame {
     private void initComponents() {
 
         jDesktopPane1 = new javax.swing.JDesktopPane();
-        profileBTN = new javax.swing.JButton();
+        searchbtn = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jButton8 = new javax.swing.JButton();
-        jButton10 = new javax.swing.JButton();
-        jButton11 = new javax.swing.JButton();
-        jButton12 = new javax.swing.JButton();
+        userbtn = new javax.swing.JButton();
+        editbtd = new javax.swing.JButton();
+        addbtn = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton5 = new javax.swing.JButton();
+        userstbl = new javax.swing.JTable();
+        deletebtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -67,22 +95,18 @@ public class admindashboard extends javax.swing.JFrame {
         jDesktopPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jDesktopPane1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        profileBTN.setText("Profile");
-        profileBTN.addActionListener(new java.awt.event.ActionListener() {
+        searchbtn.setText("Search");
+        searchbtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                profileBTNActionPerformed(evt);
+                searchbtnActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(profileBTN, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 70, 90, 30));
+        jDesktopPane1.add(searchbtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 70, 90, 30));
 
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("DASHBOARD");
         jDesktopPane1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 20, -1, -1));
-
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/laroa/images/profile.jpg"))); // NOI18N
-        jLabel3.setText("jLabel3");
-        jDesktopPane1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 0, 210, 200));
 
         jButton8.setText("Home");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
@@ -92,32 +116,32 @@ public class admindashboard extends javax.swing.JFrame {
         });
         jDesktopPane1.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 70, 90, 30));
 
-        jButton10.setText("Users");
-        jButton10.addActionListener(new java.awt.event.ActionListener() {
+        userbtn.setText("Users");
+        userbtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
+                userbtnActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(jButton10, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 70, 90, 30));
+        jDesktopPane1.add(userbtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 70, 90, 30));
 
-        jButton11.setText("Edit");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
+        editbtd.setText("Edit");
+        editbtd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
+                editbtdActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(jButton11, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 70, 90, 30));
+        jDesktopPane1.add(editbtd, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 70, 90, 30));
 
-        jButton12.setText("Create");
-        jButton12.addActionListener(new java.awt.event.ActionListener() {
+        addbtn.setText("Add");
+        addbtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton12ActionPerformed(evt);
+                addbtnActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(jButton12, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 70, 90, 30));
-        jDesktopPane1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 70, 110, 30));
+        jDesktopPane1.add(addbtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 70, 90, 30));
+        jDesktopPane1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 70, 140, 30));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        userstbl.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -125,17 +149,17 @@ public class admindashboard extends javax.swing.JFrame {
 
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(userstbl);
 
-        jDesktopPane1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 130, 770, -1));
+        jDesktopPane1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 130, 790, -1));
 
-        jButton5.setText("Delete");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        deletebtn.setText("Delete");
+        deletebtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                deletebtnActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 70, 90, 30));
+        jDesktopPane1.add(deletebtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 70, 90, 30));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -161,45 +185,42 @@ public class admindashboard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void profileBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileBTNActionPerformed
-       UProfile profile = new UProfile();
-       profile.setVisible(true);
-       this.dispose();
-    }//GEN-LAST:event_profileBTNActionPerformed
+    private void searchbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbtnActionPerformed
+        UProfile profile = new UProfile();
+        profile.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_searchbtnActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton8ActionPerformed
 
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        usertbl userstbl = new usertbl();
-        userstbl.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_jButton10ActionPerformed
-
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+    private void userbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userbtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton11ActionPerformed
+    }//GEN-LAST:event_userbtnActionPerformed
 
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-  // Go to User Dashboard
+    private void editbtdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editbtdActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_editbtdActionPerformed
+
+    private void addbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addbtnActionPerformed
+        // Go to User Dashboard
         user.userdashboard userDash = new user.userdashboard();
         userDash.setVisible(true);
         this.dispose();
-    }                                               
+        }
 
-    private void jButtonProfileActionPerformed(java.awt.event.ActionEvent evt) {                                               
-        // Go to Profile
-        laroa.UProfile profile = new laroa.UProfile();
-        profile.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_jButton12ActionPerformed
+        private void jButtonProfileActionPerformed(java.awt.event.ActionEvent evt) {
+            // Go to Profile
+            laroa.UProfile profile = new laroa.UProfile();
+            profile.setVisible(true);
+            this.dispose();
+    }//GEN-LAST:event_addbtnActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void deletebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletebtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_deletebtnActionPerformed
 
-    
     /**
      * @param args the command line arguments
      */
@@ -217,36 +238,35 @@ public class admindashboard extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(admindashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(usertbl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(admindashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(usertbl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(admindashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(usertbl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(admindashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(usertbl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new admindashboard().setVisible(true);
+                new usertbl().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton5;
+    private javax.swing.JButton addbtn;
+    private javax.swing.JButton deletebtn;
+    private javax.swing.JButton editbtd;
     private javax.swing.JButton jButton8;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JButton profileBTN;
+    private javax.swing.JButton searchbtn;
+    private javax.swing.JButton userbtn;
+    private javax.swing.JTable userstbl;
     // End of variables declaration//GEN-END:variables
 }

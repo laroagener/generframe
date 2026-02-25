@@ -129,25 +129,13 @@ public class userdashboard extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-         JOptionPane.showMessageDialog(this, "Create Transaction Form - To be implemented");
-          jDesktopPane1 = new javax.swing.JDesktopPane();
-        jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-
+         JOptionPane.showMessageDialog(this, "Create Transaction Form - To be implemented");    
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         laroa.UProfile profile = new laroa.UProfile();
         profile.setVisible(true);
-        this.dispose();
-         jButton3.setText("My Profile");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            
+        this.dispose();        
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -159,7 +147,6 @@ public class userdashboard extends javax.swing.JFrame {
         laroa.login log = new laroa.login();
         log.setVisible(true);
         this.dispose();
-    
     }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
