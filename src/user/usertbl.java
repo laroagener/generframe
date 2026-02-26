@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import laroa.UProfile;
+import laroa.login;
 
 /**
  *
@@ -24,7 +25,7 @@ public class usertbl extends javax.swing.JFrame {
      * Creates new form usertbl
      */
     public usertbl() {
-       if (Session.u_id == 0) {
+        if (Session.getInstance().getU_id() == 0) {
         JOptionPane.showMessageDialog(null, "Please login first!");
         laroa.login log = new laroa.login();
         log.setVisible(true);
@@ -84,10 +85,10 @@ public class usertbl extends javax.swing.JFrame {
         userbtn = new javax.swing.JButton();
         editbtd = new javax.swing.JButton();
         addbtn = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         userstbl = new javax.swing.JTable();
         deletebtn = new javax.swing.JButton();
+        search = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -116,7 +117,7 @@ public class usertbl extends javax.swing.JFrame {
         });
         jDesktopPane1.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 70, 90, 30));
 
-        userbtn.setText("Users");
+        userbtn.setText("User");
         userbtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 userbtnActionPerformed(evt);
@@ -139,7 +140,6 @@ public class usertbl extends javax.swing.JFrame {
             }
         });
         jDesktopPane1.add(addbtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 70, 90, 30));
-        jDesktopPane1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 70, 140, 30));
 
         userstbl.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -160,6 +160,17 @@ public class usertbl extends javax.swing.JFrame {
             }
         });
         jDesktopPane1.add(deletebtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 70, 90, 30));
+
+        search.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        search.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        search.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+        search.setOpaque(false);
+        search.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchActionPerformed(evt);
+            }
+        });
+        jDesktopPane1.add(search, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 70, 140, 30));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -186,9 +197,7 @@ public class usertbl extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbtnActionPerformed
-        UProfile profile = new UProfile();
-        profile.setVisible(true);
-        this.dispose();
+    
     }//GEN-LAST:event_searchbtnActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
@@ -196,30 +205,74 @@ public class usertbl extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void userbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userbtnActionPerformed
-        // TODO add your handling code here:
+ user.userdashboard userDash = new user.userdashboard();
+        userDash.setVisible(true);
+        this.dispose();
+                      // TODO add your handling code here:
     }//GEN-LAST:event_userbtnActionPerformed
 
     private void editbtdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editbtdActionPerformed
-        // TODO add your handling code here:
+    int selectedRow = userstbl.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a user to edit");
+            return;
+        }
+        int userId = (int) userstbl.getValueAt(selectedRow, 0);
+        String username = (String) userstbl.getValueAt(selectedRow, 1);
+        JOptionPane.showMessageDialog(this, "Edit user: " + username + " (ID: " + userId + ")");
     }//GEN-LAST:event_editbtdActionPerformed
 
     private void addbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addbtnActionPerformed
         // Go to User Dashboard
-        user.userdashboard userDash = new user.userdashboard();
-        userDash.setVisible(true);
+       laroa.Registration reg = new laroa.Registration();
+        reg.setVisible(true);
         this.dispose();
         }
 
         private void jButtonProfileActionPerformed(java.awt.event.ActionEvent evt) {
-            // Go to Profile
-            laroa.UProfile profile = new laroa.UProfile();
-            profile.setVisible(true);
-            this.dispose();
+            
     }//GEN-LAST:event_addbtnActionPerformed
 
     private void deletebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletebtnActionPerformed
-        // TODO add your handling code here:
+    int selectedRow = userstbl.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a user to delete");
+            return;
+        }
+        
+        int userId = (int) userstbl.getValueAt(selectedRow, 0);
+        String username = (String) userstbl.getValueAt(selectedRow, 1);
+        
+        int confirm = JOptionPane.showConfirmDialog(this, 
+            "Delete user: " + username + "?", 
+            "Confirm Delete", 
+            JOptionPane.YES_NO_OPTION);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            deleteUser(userId);
+            loadUsersTable();
+        }
+    }
+
+    private void deleteUser(int userId) {
+        try {
+            Connection conn = conf.connectDB();
+            String sql = "DELETE FROM tbl_users WHERE u_id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, userId);
+            pstmt.executeUpdate();
+            pstmt.close();
+            conn.close();
+            JOptionPane.showMessageDialog(this, "User deleted successfully");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error deleting user: " + e.getMessage());
+        }
+ 	
     }//GEN-LAST:event_deletebtnActionPerformed
+
+    private void searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_searchActionPerformed
 
     /**
      * @param args the command line arguments
@@ -264,7 +317,7 @@ public class usertbl extends javax.swing.JFrame {
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField search;
     private javax.swing.JButton searchbtn;
     private javax.swing.JButton userbtn;
     private javax.swing.JTable userstbl;

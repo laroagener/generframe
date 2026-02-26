@@ -81,7 +81,8 @@ public class Registration extends javax.swing.JFrame {
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>                        
+    }
+// </editor-fold>                        
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
      conf conf = new conf();
@@ -94,16 +95,15 @@ public class Registration extends javax.swing.JFrame {
         return;
     }
 
-    conf.addRecord(sql, user.getText(),email.getText(),password,"admin", "Pending");
-        
+    // FIXED: Changed "Pending" to "Active" so user can login immediately
+    // Also changed default type from "admin" to "user" for security
+    conf.addRecord(sql, user.getText(), email.getText(), password, "user", "Active");
 
-    JOptionPane.showMessageDialog(this, "Registration successful!");
-
-    // NAVIGATION
+    JOptionPane.showMessageDialog(this, "Registration successful! You can now login.");
     login login = new login();
     login.setVisible(true);
     this.dispose();
-    }
+}
     
     
                             

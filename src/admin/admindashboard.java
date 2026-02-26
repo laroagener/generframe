@@ -20,22 +20,23 @@ public class admindashboard extends javax.swing.JFrame {
      * Creates new form admindashboard
      */
     public admindashboard() {
-      if (config.Session.u_id == 0) {
+      if (config.Session.getInstance().getU_id() == 0) {
 
         JOptionPane.showMessageDialog(null, "Please login first!");
         login log = new login();
         log.setVisible(true);
         this.dispose();
+        return;
 
         
     }
 
     initComponents(); // IMPORTANT: AFTER CHECK
 
-    ((javax.swing.JLabel)jLabel3).setText(config.Session.username);
+        jLabel3.setText(config.Session.getInstance().getUsername());
 // or    ((javax.swing.JTextField)name).setText(config.Session.username);
 
-        initComponents();
+        
     }
 
 
@@ -92,7 +93,7 @@ public class admindashboard extends javax.swing.JFrame {
         });
         jDesktopPane1.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 70, 90, 30));
 
-        jButton10.setText("Users");
+        jButton10.setText("Admin");
         jButton10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton10ActionPerformed(evt);
@@ -108,7 +109,7 @@ public class admindashboard extends javax.swing.JFrame {
         });
         jDesktopPane1.add(jButton11, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 70, 90, 30));
 
-        jButton12.setText("Create");
+        jButton12.setText("Add");
         jButton12.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton12ActionPerformed(evt);

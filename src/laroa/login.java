@@ -8,10 +8,13 @@ package laroa;
 import admin.admindashboard;
 import config.Session;
 import config.conf;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import user.userdashboard;
 
 /**
  *
@@ -71,7 +74,7 @@ public class login extends javax.swing.JFrame {
         jLabel1.setBackground(new java.awt.Color(255, 51, 51));
         jLabel1.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/laroa/images/Grey Minimalist Bookstore Business Logo.png"))); // NOI18N
-        jDesktopPane1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 500, 500));
+        jDesktopPane1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, 500, 500));
 
         email.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -136,31 +139,70 @@ public class login extends javax.swing.JFrame {
     }//GEN-LAST:event_emailActionPerformed
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
-          conf c = new conf();
-          String emailInput = email.getText().trim();
-String passwordInput = new String(pass.getPassword());
+    String emailInput = email.getText().trim();
+    String passwordInput = new String(pass.getPassword());
 
-
-String sql = "SELECT * FROM tbl_users WHERE email = ? AND password = ? AND status = ?";
-
-String usersType = c.authenticate(sql, email.getText(), pass.getText(), "Active");
-
-
-if (usersType != null) {
-    JOptionPane.showMessageDialog(null, "Log in Success " + Session.username + "!");
-
-    if (usersType.equals("admin")) {
-        admindashboard ad = new admindashboard();
-        ad.setVisible(true);
-    } else {
-        // Assuming you have a separate dashboard for regular users
-        admindashboard ud = new admindashboard();
-        ud.setVisible(true);
+    // Validate empty fields
+    if (emailInput.isEmpty() || passwordInput.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "All Fields are Required!");
+        return;
     }
-    this.dispose(); 
-} else {
-    JOptionPane.showMessageDialog(null, "Invalid Credentials");
-}    
+
+    try {
+        // Use your existing conf class for database connection
+        Connection conn = new conf().connectDB();
+        
+        // Use PreparedStatement to prevent SQL injection
+        String sql = "SELECT u_id, username, email, status, type, password FROM tbl_users WHERE email = ?";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1, emailInput);
+        
+        ResultSet rs = pst.executeQuery();
+        
+        if (rs.next()) {
+            String dbPassword = rs.getString("password");
+            
+            // Check password (plain text comparison - you should hash passwords!)
+            if (passwordInput.equals(dbPassword)) {
+                
+                // Set Session data (using your existing Session class)
+                Session.getInstance().setU_id(rs.getInt("u_id"));
+                Session.getInstance().setUsername(rs.getString("username"));
+                Session.getInstance().setEmail(rs.getString("email"));
+                Session.getInstance().setStatus(rs.getString("status"));
+                Session.getInstance().setType(rs.getString("type"));
+                
+                String userType = rs.getString("type");
+                
+                JOptionPane.showMessageDialog(null, "Login Success! Welcome " + rs.getString("username") + "!");
+                
+                // REDIRECT BASED ON TYPE
+                if ("admin".equalsIgnoreCase(userType)) {
+                    admindashboard ad = new admindashboard();
+                    ad.setVisible(true);
+                } else {
+                    user.userdashboard ud = new user.userdashboard();
+                    ud.setVisible(true);
+                }
+                
+                this.dispose(); // Close login window
+                
+            } else {
+                JOptionPane.showMessageDialog(null, "Invalid Password!");
+                pass.setText("");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Email not found or account inactive!");
+        }
+        
+        rs.close();
+        pst.close();
+        conn.close();
+        
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "Database Error: " + ex.getMessage());
+        ex.printStackTrace();
+    }
     }//GEN-LAST:event_loginActionPerformed
 
     private void registerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerActionPerformed

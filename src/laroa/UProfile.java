@@ -18,19 +18,26 @@ public class UProfile extends javax.swing.JFrame {
     /**
      * Creates new form UProfile
      */
-    public UProfile() {
-        initComponents();
-           loadUserProfile();
+        public UProfile() {
+        // Session check
+        if (Session.getInstance().getU_id() == 0) {
+            JOptionPane.showMessageDialog(null, "Please login first!");
+            login log = new login();
+            log.setVisible(true);
+            this.dispose();
+            return;
         }
-    private void loadUserProfile() {
-    id1.setText("" + Session.u_id);
-    username.setText(Session.username);
-    email.setText(Session.email);
-    status.setText(Session.status);
-    type.setText(Session.type);
-
-   
-}
+        
+        initComponents();
+        loadUserProfile();
+    }
+        public void loadUserProfile() {
+        id1.setText("" + Session.getInstance().getU_id());
+        username.setText(Session.getInstance().getUsername());
+        email.setText(Session.getInstance().getEmail());
+        status.setText(Session.getInstance().getStatus());
+        type.setText(Session.getInstance().getType());
+    }
 
    
 
@@ -114,7 +121,12 @@ public class UProfile extends javax.swing.JFrame {
         jDesktopPane1.add(type, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 240, 180, 40));
         jDesktopPane1.add(status1, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 290, 180, 40));
 
-        jButton5.setText("User");
+        jButton5.setText("Back");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
         jDesktopPane1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 40, 70, 30));
 
         jPanel1.setBackground(new java.awt.Color(102, 102, 102));
@@ -146,8 +158,17 @@ public class UProfile extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+    login log = new login();
+    log.setVisible(true);
+    this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    user.userdashboard dashboard = new user.userdashboard();
+    dashboard.setVisible(true);
+    this.dispose();
+          // TODO add your handling code here:
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
      * @param args the command line arguments
