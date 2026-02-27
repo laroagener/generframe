@@ -10,24 +10,36 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author USER34
  */
 public class conf {
+    // SQLite database path - adjust this to your actual file location
+    private static final String DB_URL = "jdbc:sqlite:GENER.db"; // If in project root
+    // OR private static final String DB_URL = "jdbc:sqlite:C:/path/to/your/GENER.db";
     
-    // Connection Method to SQLITE
-    public static Connection connectDB() {
-        Connection con = null;
+    public Connection connectDB() {
+        Connection conn = null;
         try {
-            Class.forName("org.sqlite.JDBC"); // Load the SQLite JDBC driver
-            con = DriverManager.getConnection("jdbc:sqlite:GENER.db"); // Establish connection
-            System.out.println("Connection Successful");
-        } catch (Exception e) {
-            System.out.println("Connection Failed: " + e);
+            // Load SQLite JDBC driver
+            Class.forName("org.sqlite.JDBC");
+            
+            // Establish connection
+            conn = DriverManager.getConnection(DB_URL);
+            System.out.println("✓ SQLite Database connected successfully!");
+            
+        } catch (ClassNotFoundException e) {
+            System.out.println("✗ SQLite JDBC Driver not found!");
+            System.out.println("Error: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "SQLite Driver missing! Add sqlite-jdbc.jar to your project libraries.");
+        } catch (SQLException e) {
+            System.out.println("✗ Connection failed: " + e.getMessage());
         }
-        return con;
+        return conn;
+    
     }
 
     // Method to hash passwords using SHA-256

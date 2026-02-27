@@ -37,17 +37,29 @@ public class usertbl extends javax.swing.JFrame {
         loadUsersTable(); // Load data when form opens
     }
     private void loadUsersTable() {
-    DefaultTableModel model = (DefaultTableModel) userstbl.getModel();
+     DefaultTableModel model = (DefaultTableModel) userstbl.getModel();
     model.setRowCount(0); // Clear existing data
     
     // Set column headers
     model.setColumnIdentifiers(new String[]{"ID", "Username", "Email", "Type", "Status"});
     
+    Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    
     try {
-        Connection conn = conf.connectDB();
+        // FIXED: Create instance of conf
+        conf dbConfig = new conf();
+        conn = dbConfig.connectDB();
+        
+        if (conn == null) {
+            JOptionPane.showMessageDialog(this, "Database connection failed!");
+            return;
+        }
+        
         String sql = "SELECT u_id, username, email, type, status FROM tbl_users";
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        ResultSet rs = pstmt.executeQuery();
+        pstmt = conn.prepareStatement(sql);
+        rs = pstmt.executeQuery();
         
         while (rs.next()) {
             Object[] row = {
@@ -60,12 +72,18 @@ public class usertbl extends javax.swing.JFrame {
             model.addRow(row);
         }
         
-        rs.close();
-        pstmt.close();
-        conn.close();
-        
     } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Error loading users: " + e.getMessage());
+        e.printStackTrace();
+    } finally {
+        // Close resources
+        try {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+            if (conn != null) conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 
@@ -213,13 +231,18 @@ public class usertbl extends javax.swing.JFrame {
 
     private void editbtdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editbtdActionPerformed
     int selectedRow = userstbl.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a user to edit");
-            return;
-        }
-        int userId = (int) userstbl.getValueAt(selectedRow, 0);
-        String username = (String) userstbl.getValueAt(selectedRow, 1);
-        JOptionPane.showMessageDialog(this, "Edit user: " + username + " (ID: " + userId + ")");
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Please select a user to edit");
+        return;
+    }
+    
+    // Get the user ID from the selected row
+    int userId = (int) userstbl.getValueAt(selectedRow, 0);
+    
+    // Open the edit form and pass the user ID
+    laroa.edit editForm = new laroa.edit(userId);
+    editForm.setVisible(true);
+    this.dispose();
     }//GEN-LAST:event_editbtdActionPerformed
 
     private void addbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addbtnActionPerformed
@@ -255,23 +278,99 @@ public class usertbl extends javax.swing.JFrame {
     }
 
     private void deleteUser(int userId) {
-        try {
-            Connection conn = conf.connectDB();
-            String sql = "DELETE FROM tbl_users WHERE u_id = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, userId);
-            pstmt.executeUpdate();
-            pstmt.close();
-            conn.close();
+       Connection conn = null;
+    PreparedStatement pstmt = null;
+    
+    try {
+        conf dbConfig = new conf();
+        conn = dbConfig.connectDB();
+        
+        String sql = "DELETE FROM tbl_users WHERE u_id = ?";
+        pstmt = conn.prepareStatement(sql);
+        pstmt.setInt(1, userId);
+        
+        int rowsAffected = pstmt.executeUpdate();
+        
+        if (rowsAffected > 0) {
             JOptionPane.showMessageDialog(this, "User deleted successfully");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error deleting user: " + e.getMessage());
+        } else {
+            JOptionPane.showMessageDialog(this, "User not found or already deleted");
         }
+        
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error deleting user: " + e.getMessage());
+        e.printStackTrace();
+    } finally {
+        try {
+            if (pstmt != null) pstmt.close();
+            if (conn != null) conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
  	
     }//GEN-LAST:event_deletebtnActionPerformed
 
     private void searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchActionPerformed
-        // TODO add your handling code here:
+    String keyword = search.getText().trim();
+    
+    if (keyword.isEmpty()) {
+        loadUsersTable(); // Show all if empty
+        return;
+    }
+    
+    DefaultTableModel model = (DefaultTableModel) userstbl.getModel();
+    model.setRowCount(0);
+    
+    Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    
+    try {
+        conf dbConfig = new conf();
+        conn = dbConfig.connectDB();
+        
+        // Search in username, email, or type
+        String sql = "SELECT u_id, username, email, type, status FROM tbl_users " +
+                     "WHERE username LIKE ? OR email LIKE ? OR type LIKE ?";
+        pstmt = conn.prepareStatement(sql);
+        String searchPattern = "%" + keyword + "%";
+        pstmt.setString(1, searchPattern);
+        pstmt.setString(2, searchPattern);
+        pstmt.setString(3, searchPattern);
+        
+        rs = pstmt.executeQuery();
+        
+        boolean found = false;
+        while (rs.next()) {
+            found = true;
+            Object[] row = {
+                rs.getInt("u_id"),
+                rs.getString("username"),
+                rs.getString("email"),
+                rs.getString("type"),
+                rs.getString("status")
+            };
+            model.addRow(row);
+        }
+        
+        if (!found) {
+            JOptionPane.showMessageDialog(this, "No results found for: '" + keyword + "'");
+            loadUsersTable(); // Reload all
+        }
+        
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Search error: " + e.getMessage());
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+            if (conn != null) conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     }//GEN-LAST:event_searchActionPerformed
 
     /**

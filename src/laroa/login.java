@@ -139,33 +139,53 @@ public class login extends javax.swing.JFrame {
     }//GEN-LAST:event_emailActionPerformed
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
-    String emailInput = email.getText().trim();
+     String emailInput = email.getText().trim();
     String passwordInput = new String(pass.getPassword());
 
     // Validate empty fields
     if (emailInput.isEmpty() || passwordInput.isEmpty()) {
-        JOptionPane.showMessageDialog(null, "All Fields are Required!");
+        JOptionPane.showMessageDialog(this, "All Fields are Required!", "Error", JOptionPane.ERROR_MESSAGE);
         return;
     }
 
+    Connection conn = null;
+    PreparedStatement pst = null;
+    ResultSet rs = null;
+
     try {
-        // Use your existing conf class for database connection
-        Connection conn = new conf().connectDB();
+        // FIXED: Check if conf.connectDB() is static or instance method
+        // If connectDB() is static: Connection conn = conf.connectDB();
+        // If connectDB() is instance method: Connection conn = new conf().connectDB();
         
-        // Use PreparedStatement to prevent SQL injection
-        String sql = "SELECT u_id, username, email, status, type, password FROM tbl_users WHERE email = ?";
-        PreparedStatement pst = conn.prepareStatement(sql);
+        conf dbConfig = new conf();
+        conn = dbConfig.connectDB();
+        
+        // Check if connection is successful
+        if (conn == null) {
+            JOptionPane.showMessageDialog(this, "Database connection failed!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // DEBUG: Show what email is being searched
+        System.out.println("Searching for email: [" + emailInput + "]");
+
+        // FIXED: Check both email AND status = 'Active' (case sensitive)
+        String sql = "SELECT u_id, username, email, status, type, password FROM tbl_users WHERE email = ? AND status = 'Active'";
+        pst = conn.prepareStatement(sql);
         pst.setString(1, emailInput);
         
-        ResultSet rs = pst.executeQuery();
+        rs = pst.executeQuery();
         
         if (rs.next()) {
             String dbPassword = rs.getString("password");
+            String dbStatus = rs.getString("status");
             
-            // Check password (plain text comparison - you should hash passwords!)
+            System.out.println("User found: " + rs.getString("username") + ", Status: " + dbStatus);
+            
+            // Check password
             if (passwordInput.equals(dbPassword)) {
                 
-                // Set Session data (using your existing Session class)
+                // Set Session data
                 Session.getInstance().setU_id(rs.getInt("u_id"));
                 Session.getInstance().setUsername(rs.getString("username"));
                 Session.getInstance().setEmail(rs.getString("email"));
@@ -174,9 +194,9 @@ public class login extends javax.swing.JFrame {
                 
                 String userType = rs.getString("type");
                 
-                JOptionPane.showMessageDialog(null, "Login Success! Welcome " + rs.getString("username") + "!");
+                JOptionPane.showMessageDialog(this, "Login Success! Welcome " + rs.getString("username") + "!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 
-                // REDIRECT BASED ON TYPE
+                // Redirect based on type
                 if ("admin".equalsIgnoreCase(userType)) {
                     admindashboard ad = new admindashboard();
                     ad.setVisible(true);
@@ -185,23 +205,41 @@ public class login extends javax.swing.JFrame {
                     ud.setVisible(true);
                 }
                 
-                this.dispose(); // Close login window
+                this.dispose();
                 
             } else {
-                JOptionPane.showMessageDialog(null, "Invalid Password!");
+                JOptionPane.showMessageDialog(this, "Invalid Password!", "Error", JOptionPane.ERROR_MESSAGE);
                 pass.setText("");
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Email not found or account inactive!");
+            // DEBUG: Check if email exists but status is not Active
+            String checkSql = "SELECT status FROM tbl_users WHERE email = ?";
+            PreparedStatement checkStmt = conn.prepareStatement(checkSql);
+            checkStmt.setString(1, emailInput);
+            ResultSet checkRs = checkStmt.executeQuery();
+            
+            if (checkRs.next()) {
+                String status = checkRs.getString("status");
+                JOptionPane.showMessageDialog(this, "Account found but status is: " + status + "\nPlease contact admin.", "Account Inactive", JOptionPane.WARNING_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Email not found in database!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            checkRs.close();
+            checkStmt.close();
         }
         
-        rs.close();
-        pst.close();
-        conn.close();
-        
     } catch (SQLException ex) {
-        JOptionPane.showMessageDialog(null, "Database Error: " + ex.getMessage());
+        JOptionPane.showMessageDialog(this, "Database Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         ex.printStackTrace();
+    } finally {
+        // Always close resources
+        try {
+            if (rs != null) rs.close();
+            if (pst != null) pst.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
     }//GEN-LAST:event_loginActionPerformed
 

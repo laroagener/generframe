@@ -102,6 +102,11 @@ public class UProfile extends javax.swing.JFrame {
         jDesktopPane1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, 70, 30));
 
         jButton4.setText("LogIn");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
         jDesktopPane1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 40, 70, 30));
 
         jLabel7.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
@@ -115,6 +120,12 @@ public class UProfile extends javax.swing.JFrame {
         jLabel6.setText("Type:");
         jDesktopPane1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 250, -1, 20));
         jDesktopPane1.add(status, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 290, 180, 40));
+
+        id1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                id1MouseClicked(evt);
+            }
+        });
         jDesktopPane1.add(id1, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 90, 180, 40));
         jDesktopPane1.add(username, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 140, 180, 40));
         jDesktopPane1.add(email, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 190, 180, 40));
@@ -169,6 +180,14 @@ public class UProfile extends javax.swing.JFrame {
     this.dispose();
           // TODO add your handling code here:
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void id1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_id1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_id1MouseClicked
 
     /**
      * @param args the command line arguments

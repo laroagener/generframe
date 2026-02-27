@@ -10,6 +10,7 @@ import laroa.UProfile;
 import laroa.login;
 import user.usertbl;
 
+
 /**
  *
  * @author USER33
@@ -116,6 +117,12 @@ public class admindashboard extends javax.swing.JFrame {
             }
         });
         jDesktopPane1.add(jButton12, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 70, 90, 30));
+
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
         jDesktopPane1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 70, 110, 30));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -199,6 +206,10 @@ public class admindashboard extends javax.swing.JFrame {
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+     
+    }//GEN-LAST:event_jTextField1ActionPerformed
 
     
     /**
