@@ -224,7 +224,65 @@ public class usertbl extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbtnActionPerformed
+String keyword = search.getText().trim();
     
+    if (keyword.isEmpty()) {
+        loadUsersTable(); // ✅ FIXED: Call loadUsersTable, not loadTransactionsTable
+        return;
+    }
+
+    DefaultTableModel model = (DefaultTableModel) userstbl.getModel(); // ✅ FIXED: Use userstbl, not usertbl
+    model.setRowCount(0);
+
+    Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+
+    try {
+        conf dbConfig = new conf();
+        conn = dbConfig.connectDB();
+        
+        // ✅ FIXED: Search users, not transactions
+        String sql = "SELECT u_id, username, email, type, status FROM tbl_users " +
+                    "WHERE username LIKE ? OR email LIKE ? OR type LIKE ? OR u_id LIKE ?";
+        pstmt = conn.prepareStatement(sql);
+        String pattern = "%" + keyword + "%";
+        pstmt.setString(1, pattern);
+        pstmt.setString(2, pattern);
+        pstmt.setString(3, pattern);
+        pstmt.setString(4, pattern);
+        rs = pstmt.executeQuery();
+
+        boolean found = false;
+        while (rs.next()) {
+            found = true;
+            Object[] row = {
+                rs.getInt("u_id"),
+                rs.getString("username"),
+                rs.getString("email"),
+                rs.getString("type"),
+                rs.getString("status")
+            };
+            model.addRow(row);
+        }
+        
+        if (!found) {
+            JOptionPane.showMessageDialog(this, "No users found for: '" + keyword + "'");
+            loadUsersTable(); // Reload all users
+        }
+        
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Search error: " + e.getMessage());
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+            if (conn != null) conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }        
     }//GEN-LAST:event_searchbtnActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed

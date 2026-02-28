@@ -211,7 +211,7 @@ String keyword = search.getText().trim();
             conf dbConfig = new conf();
             conn = dbConfig.connectDB();
             String sql = "SELECT t.transaction_id, t.customer_name, t.total_amount, t.transaction_date, " +
-                        "t.payment_method, u.username as cashier " +
+                        "t.payment_method, t.u_id as cashier " +
                         "FROM tbl_transactions t JOIN tbl_users u ON t.u_id = u.u_id " +
                         "WHERE t.customer_name LIKE ? OR t.transaction_id LIKE ? " +
                         "ORDER BY t.transaction_date DESC";
@@ -253,66 +253,80 @@ String keyword = search.getText().trim();
 
     private void editbtdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editbtdActionPerformed
         int selectedRow = transactiontbl.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a transaction to view");
-            return;
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Please select a transaction to edit");
+        return;
+    }
+
+    int transId = (int) transactiontbl.getValueAt(selectedRow, 0);
+    String currentCustomer = (String) transactiontbl.getValueAt(selectedRow, 1);
+    String currentTotal = (String) transactiontbl.getValueAt(selectedRow, 2);
+    String currentPayment = (String) transactiontbl.getValueAt(selectedRow, 4);
+
+    // Step 1: Edit Customer Name
+    String newCustomer = JOptionPane.showInputDialog(this, 
+        "Edit Customer Name:", currentCustomer);
+    if (newCustomer == null) return; // Cancelled
+    if (newCustomer.trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Customer name cannot be empty!");
+        return;
+    }
+
+    // Step 2: Edit Payment Method
+    String[] paymentOptions = {"Cash", "Credit Card", "Debit Card", "Online Payment"};
+    String newPayment = (String) JOptionPane.showInputDialog(this, 
+        "Select Payment Method:", "Edit Payment", 
+        JOptionPane.QUESTION_MESSAGE, null, paymentOptions, currentPayment);
+    if (newPayment == null) return; // Cancelled
+
+    // Confirm update
+    int confirm = JOptionPane.showConfirmDialog(this,
+        "Update Transaction #" + transId + "?\n\n" +
+        "Customer: " + currentCustomer + " → " + newCustomer + "\n" +
+        "Payment: " + currentPayment + " → " + newPayment + "\n\n" +
+        "Confirm changes?",
+        "Confirm Update", JOptionPane.YES_NO_OPTION);
+
+    if (confirm == JOptionPane.YES_OPTION) {
+        if (updateTransaction(transId, newCustomer, newPayment)) {
+            JOptionPane.showMessageDialog(this, "Transaction updated successfully!");
+            loadTransactionsTable(); // Refresh table
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to update transaction!", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+}
 
-        int transId = (int) transactiontbl.getValueAt(selectedRow, 0);
-        viewTransactionDetails(transId);
-    }                                       
+// Add this new method to handle the update
+private boolean updateTransaction(int transId, String customerName, String paymentMethod) {
+    Connection conn = null;
+    PreparedStatement pstmt = null;
 
-    // ✅ FIXED: Added missing viewTransactionDetails method
-    private void viewTransactionDetails(int transId) {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
+    try {
+        conf dbConfig = new conf();
+        conn = dbConfig.connectDB();
+        
+        String sql = "UPDATE tbl_transactions SET customer_name = ?, payment_method = ? WHERE transaction_id = ?";
+        pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, customerName);
+        pstmt.setString(2, paymentMethod);
+        pstmt.setInt(3, transId);
+        
+        int rows = pstmt.executeUpdate();
+        return rows > 0;
 
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+        return false;
+    } finally {
         try {
-            conf dbConfig = new conf();
-            conn = dbConfig.connectDB();
-            
-            String sql = "SELECT t.*, ti.book_title, ti.quantity, ti.price, ti.subtotal, u.username " +
-                        "FROM tbl_transactions t " +
-                        "JOIN tbl_transaction_items ti ON t.transaction_id = ti.transaction_id " +
-                        "JOIN tbl_users u ON t.u_id = u.u_id " +
-                        "WHERE t.transaction_id = ?";
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, transId);
-            rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                StringBuilder details = new StringBuilder();
-                details.append("Transaction ID: ").append(transId).append("\n");
-                details.append("Customer: ").append(rs.getString("customer_name")).append("\n");
-                details.append("Date: ").append(rs.getString("transaction_date")).append("\n");
-                details.append("Cashier: ").append(rs.getString("username")).append("\n");
-                details.append("Payment: ").append(rs.getString("payment_method")).append("\n\n");
-                details.append("Items:\n");
-                details.append("----------------------------------------\n");
-                
-                do {
-                    details.append(rs.getString("book_title")).append(" x ")
-                           .append(rs.getInt("quantity")).append(" = ")
-                           .append(String.format("%.2f", rs.getDouble("subtotal"))).append("\n");
-                } while (rs.next());
-                
-                details.append("----------------------------------------\n");
-                details.append("Total: ").append(String.format("%.2f", rs.getDouble("total_amount")));
-
-                JOptionPane.showMessageDialog(this, details.toString(), "Transaction Details", JOptionPane.INFORMATION_MESSAGE);
-            }
+            if (pstmt != null) pstmt.close();
+            if (conn != null) conn.close();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            e.printStackTrace();
         }
+    }
 
     }//GEN-LAST:event_editbtdActionPerformed
 
