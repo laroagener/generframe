@@ -246,11 +246,163 @@ public class usertbl extends javax.swing.JFrame {
     }//GEN-LAST:event_editbtdActionPerformed
 
     private void addbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addbtnActionPerformed
-        // Go to User Dashboard
-       laroa.Registration reg = new laroa.Registration();
-        reg.setVisible(true);
-        this.dispose();
+        // Step 1: Get Username
+    String username = JOptionPane.showInputDialog(this, "Enter Username:", "Add User - Step 1/4", JOptionPane.QUESTION_MESSAGE);
+    
+    // Check if user cancelled
+    if (username == null) {
+        return; // User clicked Cancel
+    }
+    
+    // Validate username
+    if (username.trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Username cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    // Check if username already exists
+    if (isUsernameExists(username.trim())) {
+        JOptionPane.showMessageDialog(this, "Username already exists!", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    // Step 2: Get Email
+    String email = JOptionPane.showInputDialog(this, "Enter Email:", "Add User - Step 2/4", JOptionPane.QUESTION_MESSAGE);
+    
+    if (email == null) {
+        return; // User clicked Cancel
+    }
+    
+    // Validate email
+    if (email.trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Email cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    // Check if email already exists
+    if (isEmailExists(email.trim())) {
+        JOptionPane.showMessageDialog(this, "Email already exists!", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    // Step 3: Get Password
+    String password = JOptionPane.showInputDialog(this, "Enter Password:", "Add User - Step 3/4", JOptionPane.QUESTION_MESSAGE);
+    
+    if (password == null) {
+        return; // User clicked Cancel
+    }
+    
+    // Validate password
+    if (password.trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Password cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    // Step 4: Confirm and Add
+    int confirm = JOptionPane.showConfirmDialog(this, 
+        "Add user '" + username + "' to database?", 
+        "Add User - Step 4/4", 
+        JOptionPane.OK_CANCEL_OPTION);
+    
+    if (confirm != JOptionPane.OK_OPTION) {
+        return; // User cancelled
+    }
+    
+    // Add user to database
+    if (addUserToDatabase(username.trim(), email.trim(), password)) {
+        JOptionPane.showMessageDialog(this, "Added completely!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        loadUsersTable(); // Refresh the table
+    } else {
+        JOptionPane.showMessageDialog(this, "Failed to add user!", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+// Helper method: Check if username exists
+private boolean isUsernameExists(String username) {
+    Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    
+    try {
+        conf dbConfig = new conf();
+        conn = dbConfig.connectDB();
+        String sql = "SELECT u_id FROM tbl_users WHERE username = ?";
+        pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, username);
+        rs = pstmt.executeQuery();
+        return rs.next(); // Returns true if found
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+            if (conn != null) conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+}
+
+// Helper method: Check if email exists
+private boolean isEmailExists(String email) {
+    Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    
+    try {
+        conf dbConfig = new conf();
+        conn = dbConfig.connectDB();
+        String sql = "SELECT u_id FROM tbl_users WHERE email = ?";
+        pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, email);
+        rs = pstmt.executeQuery();
+        return rs.next(); // Returns true if found
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+            if (conn != null) conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+// Helper method: Add user to database
+private boolean addUserToDatabase(String username, String email, String password) {
+    Connection conn = null;
+    PreparedStatement pstmt = null;
+    
+    try {
+        conf dbConfig = new conf();
+        conn = dbConfig.connectDB();
+        
+        String sql = "INSERT INTO tbl_users (username, email, password, type, status) VALUES (?, ?, ?, 'user', 'Active')";
+        pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, username);
+        pstmt.setString(2, email);
+        pstmt.setString(3, password);
+        
+        int rowsAffected = pstmt.executeUpdate();
+        return rowsAffected > 0;
+        
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+        return false;
+    } finally {
+        try {
+            if (pstmt != null) pstmt.close();
+            if (conn != null) conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }        }
 
         private void jButtonProfileActionPerformed(java.awt.event.ActionEvent evt) {
             

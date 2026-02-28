@@ -201,8 +201,10 @@ public class login extends javax.swing.JFrame {
                     admindashboard ad = new admindashboard();
                     ad.setVisible(true);
                 } else {
-                    user.userdashboard ud = new user.userdashboard();
-                    ud.setVisible(true);
+                user.usertbl table = new user.usertbl();
+                table.setVisible(true);
+    
+    
                 }
                 
                 this.dispose();
