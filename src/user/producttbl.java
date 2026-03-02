@@ -17,20 +17,19 @@ import javax.swing.table.DefaultTableModel;
  */
 public class producttbl extends javax.swing.JFrame {
     public producttbl() {
-    try {
-        if (Session.getInstance().getU_id() == 0) {
-            JOptionPane.showMessageDialog(null, "Please login first!");
-            laroa.login log = new laroa.login();
-            log.setVisible(true);
-            this.dispose();
-            return;
-        }
-        initComponents();
-        loadProductsTable();
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error initializing: " + e.getMessage());
-        e.printStackTrace();
-        } 
+     // Check session FIRST before anything else
+    if (Session.getInstance().getU_id() == 0) {
+        JOptionPane.showMessageDialog(null, "Please login first!");
+        laroa.login log = new laroa.login();
+        log.setVisible(true);
+        this.dispose();
+        return; // Exit constructor immediately
+    }
+    
+    // Initialize form and load data
+    initComponents();
+    loadProductsTable();
+    
     }
     
         private void loadProductsTable() {
@@ -87,7 +86,6 @@ public class producttbl extends javax.swing.JFrame {
         jDesktopPane1 = new javax.swing.JDesktopPane();
         profileBTN = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jButton8 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
         jButton11 = new javax.swing.JButton();
@@ -115,10 +113,6 @@ public class producttbl extends javax.swing.JFrame {
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("PRODUCT LIST");
         jDesktopPane1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 20, -1, -1));
-
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/laroa/images/profile.jpg"))); // NOI18N
-        jLabel3.setText("jLabel3");
-        jDesktopPane1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 0, 210, 200));
 
         jButton8.setText("Back");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
@@ -206,13 +200,14 @@ public class producttbl extends javax.swing.JFrame {
     }//GEN-LAST:event_profileBTNActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-   usertbl userstbl = new usertbl();
+       user.usertbl userstbl = new user.usertbl();  // <-- ADD "user." package
         userstbl.setVisible(true);
-        this.dispose();       // TODO add your handling code here:
+        this.dispose();       
+      // TODO add your handling code here:
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-         user.usertbl users = new user.usertbl();
+     user.usertbl users = new user.usertbl();
         users.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton10ActionPerformed
@@ -388,9 +383,7 @@ public class producttbl extends javax.swing.JFrame {
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
      searchProducts();
-    }
-    
-    // Add this method for search button if you have one
+    }// Add this method for search button if you have one
     private void searchProducts() {
         String keyword = jTextField1.getText().trim();
         if (keyword.isEmpty()) {
@@ -440,8 +433,6 @@ public class producttbl extends javax.swing.JFrame {
             }
         
         }
-
-
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -494,7 +485,7 @@ public class producttbl extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    {
+     public static void main(String args[]){
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -534,7 +525,6 @@ public class producttbl extends javax.swing.JFrame {
     private javax.swing.JButton jButton8;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;

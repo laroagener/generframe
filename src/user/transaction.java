@@ -331,22 +331,39 @@ private boolean updateTransaction(int transId, String customerName, String payme
     }//GEN-LAST:event_editbtdActionPerformed
 
     private void addbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addbtnActionPerformed
-        createNewTransaction();
+createNewTransaction();
     }
 
     private void createNewTransaction() {
+        // Step 1: Get Customer Name
         String customerName = JOptionPane.showInputDialog(this, 
-            "Enter Customer Name:", "New Transaction - Step 1/5", JOptionPane.QUESTION_MESSAGE);
+            "Enter Customer Name:", "New Transaction - Step 1/4", JOptionPane.QUESTION_MESSAGE);
         
         if (customerName == null || customerName.trim().isEmpty()) return;
 
-        String bookTitle = JOptionPane.showInputDialog(this, 
-            "Enter Book Title:", "New Transaction - Step 2/5", JOptionPane.QUESTION_MESSAGE);
+        // Step 2: Select Product from Database (DROPDOWN)
+        String[] products = getProductsFromDatabase();
+        if (products == null || products.length == 0) {
+            JOptionPane.showMessageDialog(this, "No products available in database!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         
-        if (bookTitle == null || bookTitle.trim().isEmpty()) return;
+        String selectedProduct = (String) JOptionPane.showInputDialog(this, 
+            "Select Product:", "New Transaction - Step 2/4", 
+            JOptionPane.QUESTION_MESSAGE, null, products, products[0]);
+        
+        if (selectedProduct == null) return; // Cancelled
+        
+        // Parse product info (format: "ID - Product Name - Price - Stock")
+        String[] productParts = selectedProduct.split(" - ");
+        int productId = Integer.parseInt(productParts[0]);
+        String productName = productParts[1];
+        double productPrice = Double.parseDouble(productParts[2]);
+        int availableStock = Integer.parseInt(productParts[3]);
 
+        // Step 3: Enter Quantity
         String qtyStr = JOptionPane.showInputDialog(this, 
-            "Enter Quantity:", "New Transaction - Step 3/5", JOptionPane.QUESTION_MESSAGE);
+            "Enter Quantity (Available: " + availableStock + "):", "New Transaction - Step 3/4", JOptionPane.QUESTION_MESSAGE);
         
         if (qtyStr == null) return;
         
@@ -354,40 +371,31 @@ private boolean updateTransaction(int transId, String customerName, String payme
         try {
             quantity = Integer.parseInt(qtyStr.trim());
             if (quantity <= 0) throw new NumberFormatException();
+            if (quantity > availableStock) {
+                JOptionPane.showMessageDialog(this, "Not enough stock! Available: " + availableStock, "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid quantity!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        String priceStr = JOptionPane.showInputDialog(this, 
-            "Enter Price per Book:", "New Transaction - Step 4/5", JOptionPane.QUESTION_MESSAGE);
-        
-        if (priceStr == null) return;
-        
-        double price;
-        try {
-            price = Double.parseDouble(priceStr.trim());
-            if (price <= 0) throw new NumberFormatException();
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Invalid price!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
+        // Step 4: Select Payment Method
         String[] paymentOptions = {"Cash", "Credit Card", "Debit Card", "Online Payment"};
         String paymentMethod = (String) JOptionPane.showInputDialog(this, 
-            "Select Payment Method:", "New Transaction - Step 5/5", 
+            "Select Payment Method:", "New Transaction - Step 4/4", 
             JOptionPane.QUESTION_MESSAGE, null, paymentOptions, paymentOptions[0]);
         
         if (paymentMethod == null) return;
 
-        double totalAmount = quantity * price;
+        double totalAmount = quantity * productPrice;
 
         int confirm = JOptionPane.showConfirmDialog(this,
             "Transaction Summary:\n\n" +
             "Customer: " + customerName + "\n" +
-            "Book: " + bookTitle + "\n" +
+            "Product: " + productName + "\n" +
             "Quantity: " + quantity + "\n" +
-            "Price: " + String.format("%.2f", price) + "\n" +
+            "Price: " + String.format("%.2f", productPrice) + "\n" +
             "Total: " + String.format("%.2f", totalAmount) + "\n" +
             "Payment: " + paymentMethod + "\n\n" +
             "Confirm transaction?",
@@ -395,17 +403,58 @@ private boolean updateTransaction(int transId, String customerName, String payme
 
         if (confirm != JOptionPane.YES_OPTION) return;
 
-        if (saveTransaction(customerName, bookTitle, quantity, price, totalAmount, paymentMethod)) {
+        if (saveTransaction(customerName, productId, productName, quantity, productPrice, totalAmount, paymentMethod)) {
             JOptionPane.showMessageDialog(this, "Transaction completed successfully!", 
                 "Success", JOptionPane.INFORMATION_MESSAGE);
             loadTransactionsTable();
-            showReceipt(customerName, bookTitle, quantity, price, totalAmount, paymentMethod);
+            showReceipt(customerName, productName, quantity, productPrice, totalAmount, paymentMethod);
         } else {
             JOptionPane.showMessageDialog(this, "Transaction failed!", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private boolean saveTransaction(String customerName, String bookTitle, int quantity, 
+    // NEW METHOD: Fetch products from database
+    private String[] getProductsFromDatabase() {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        java.util.List<String> productList = new java.util.ArrayList<>();
+
+        try {
+            conf dbConfig = new conf();
+            conn = dbConfig.connectDB();
+            
+            // Only get available products with stock > 0
+            String sql = "SELECT product_id, product_name, price, quantity FROM tbl_products WHERE status = 'Available' AND quantity > 0 ORDER BY product_name";
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("product_id");
+                String name = rs.getString("product_name");
+                double price = rs.getDouble("price");
+                int stock = rs.getInt("quantity");
+                
+                // Format: "ID - Product Name - Price - Stock"
+                productList.add(id + " - " + name + " - " + price + " - " + stock);
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error loading products: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return productList.toArray(new String[0]);
+    }
+     private boolean saveTransaction(String customerName, int productId, String productName, int quantity, 
             double price, double totalAmount, String paymentMethod) {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -416,6 +465,7 @@ private boolean updateTransaction(int transId, String customerName, String payme
             conn = dbConfig.connectDB();
             conn.setAutoCommit(false);
 
+            // Insert transaction
             String sqlTrans = "INSERT INTO tbl_transactions (u_id, customer_name, total_amount, payment_method) VALUES (?, ?, ?, ?)";
             pstmt = conn.prepareStatement(sqlTrans, Statement.RETURN_GENERATED_KEYS);
             pstmt.setInt(1, Session.getInstance().getU_id());
@@ -430,13 +480,22 @@ private boolean updateTransaction(int transId, String customerName, String payme
                 transId = rs.getInt(1);
             }
 
-            String sqlItem = "INSERT INTO tbl_transaction_items (transaction_id, book_title, quantity, price, subtotal) VALUES (?, ?, ?, ?, ?)";
+            // Insert transaction item with product_id
+            String sqlItem = "INSERT INTO tbl_transaction_items (transaction_id, product_id, book_title, quantity, price, subtotal) VALUES (?, ?, ?, ?, ?, ?)";
             pstmt = conn.prepareStatement(sqlItem);
             pstmt.setInt(1, transId);
-            pstmt.setString(2, bookTitle);
-            pstmt.setInt(3, quantity);
-            pstmt.setDouble(4, price);
-            pstmt.setDouble(5, totalAmount);
+            pstmt.setInt(2, productId);
+            pstmt.setString(3, productName);
+            pstmt.setInt(4, quantity);
+            pstmt.setDouble(5, price);
+            pstmt.setDouble(6, totalAmount);
+            pstmt.executeUpdate();
+
+            // Update product stock
+            String sqlUpdateStock = "UPDATE tbl_products SET quantity = quantity - ? WHERE product_id = ?";
+            pstmt = conn.prepareStatement(sqlUpdateStock);
+            pstmt.setInt(1, quantity);
+            pstmt.setInt(2, productId);
             pstmt.executeUpdate();
 
             conn.commit();
@@ -463,8 +522,8 @@ private boolean updateTransaction(int transId, String customerName, String payme
                 e.printStackTrace();
             }
         }
-    }
-
+        }
+        
     private void showReceipt(String customerName, String bookTitle, int quantity, 
             double price, double totalAmount, String paymentMethod) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
