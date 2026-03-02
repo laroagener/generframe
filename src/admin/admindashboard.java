@@ -86,7 +86,7 @@ public class admindashboard extends javax.swing.JFrame {
         jLabel3.setText("jLabel3");
         jDesktopPane1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 0, 210, 200));
 
-        jButton8.setText("Home");
+        jButton8.setText("Back");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton8ActionPerformed(evt);
@@ -94,7 +94,7 @@ public class admindashboard extends javax.swing.JFrame {
         });
         jDesktopPane1.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 70, 90, 30));
 
-        jButton10.setText("Admin");
+        jButton10.setText("User");
         jButton10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton10ActionPerformed(evt);

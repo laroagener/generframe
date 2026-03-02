@@ -128,7 +128,7 @@ public class usertbl extends javax.swing.JFrame {
         jLabel2.setText("DASHBOARD");
         jDesktopPane1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 20, -1, -1));
 
-        jButton8.setText("Home");
+        jButton8.setText("Product");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton8ActionPerformed(evt);
@@ -286,8 +286,8 @@ String keyword = search.getText().trim();
     }//GEN-LAST:event_searchbtnActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-     user.usertbl table = new user.usertbl();
-    table.setVisible(true);
+     user.producttbl product = new user.producttbl();
+    product.setVisible(true);
     this.dispose();   // TODO add your handling code here:
     }//GEN-LAST:event_jButton8ActionPerformed
 
