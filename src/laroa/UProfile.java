@@ -169,9 +169,9 @@ public class UProfile extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-    login log = new login();
-    log.setVisible(true);
-    this.dispose();
+    user.usertbl userstbl = new user.usertbl();  // <-- ADD "user." package
+        userstbl.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed

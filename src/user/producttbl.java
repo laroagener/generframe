@@ -35,7 +35,7 @@ public class producttbl extends javax.swing.JFrame {
         private void loadProductsTable() {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
-        model.setColumnIdentifiers(new String[]{"ID", "Product Name", "Description", "Price", "Quantity", "Category", "Status"});
+        model.setColumnIdentifiers(new String[]{"ID", "Title", "Description", "Price", "Quantity", "Category", "Status"});
 
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -94,6 +94,7 @@ public class producttbl extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButton5 = new javax.swing.JButton();
+        searchbtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -173,6 +174,14 @@ public class producttbl extends javax.swing.JFrame {
         });
         jDesktopPane1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 70, 90, 30));
 
+        searchbtn.setText("Search");
+        searchbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchbtnActionPerformed(evt);
+            }
+        });
+        jDesktopPane1.add(searchbtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 70, 90, 30));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -220,15 +229,20 @@ public class producttbl extends javax.swing.JFrame {
         }
 
         int productId = (int) jTable1.getValueAt(selectedRow, 0);
-        String currentName = (String) jTable1.getValueAt(selectedRow, 1);
-        String currentPrice = (String) jTable1.getValueAt(selectedRow, 3);
-        String currentQty = (String) jTable1.getValueAt(selectedRow, 4);
+        String currentTitle = (String) jTable1.getValueAt(selectedRow, 1);
+        
+        // FIX: Handle Price and Quantity as Objects, then convert to String
+        Object priceObj = jTable1.getValueAt(selectedRow, 3);
+        Object qtyObj = jTable1.getValueAt(selectedRow, 4);
+        
+        String currentPrice = priceObj.toString();
+        String currentQty = qtyObj.toString();
 
-        // Edit Name
-        String newName = JOptionPane.showInputDialog(this, "Edit Product Name:", currentName);
-        if (newName == null) return;
-        if (newName.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Product name cannot be empty!");
+        // Edit Title
+        String newTitle = JOptionPane.showInputDialog(this, "Edit Title:", currentTitle);
+        if (newTitle == null) return;
+        if (newTitle.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Title cannot be empty!");
             return;
         }
 
@@ -238,6 +252,7 @@ public class producttbl extends javax.swing.JFrame {
         double newPrice;
         try {
             newPrice = Double.parseDouble(priceStr.trim());
+            if (newPrice < 0) throw new NumberFormatException();
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid price!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -249,31 +264,38 @@ public class producttbl extends javax.swing.JFrame {
         int newQty;
         try {
             newQty = Integer.parseInt(qtyStr.trim());
+            if (newQty < 0) throw new NumberFormatException();
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid quantity!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        if (updateProduct(productId, newName, newPrice, newQty)) {
+        if (updateProduct(productId, newTitle, newPrice, newQty)) {
             JOptionPane.showMessageDialog(this, "Product updated successfully!");
             loadProductsTable();
         } else {
             JOptionPane.showMessageDialog(this, "Update failed!", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
+    }                                         
 
-    private boolean updateProduct(int id, String name, double price, int qty) {
+    // METHOD 1: For EDITING (4 parameters) - UPDATE SQL
+    private boolean updateProduct(int id, String title, double price, int qty) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         try {
             conf dbConfig = new conf();
             conn = dbConfig.connectDB();
-            String sql = "UPDATE tbl_products SET product_name = ?, price = ?, quantity = ? WHERE product_id = ?";
+            
+            // Auto-update status based on quantity
+            String status = (qty > 0) ? "Available" : "Out of Stock";
+            
+            String sql = "UPDATE tbl_products SET product_name = ?, price = ?, quantity = ?, status = ? WHERE product_id = ?";
             pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, name);
+            pstmt.setString(1, title);
             pstmt.setDouble(2, price);
             pstmt.setInt(3, qty);
-            pstmt.setInt(4, id);
+            pstmt.setString(4, status);
+            pstmt.setInt(5, id);
             return pstmt.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -289,9 +311,8 @@ public class producttbl extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        // Go to User Dashboard
-        String productName = JOptionPane.showInputDialog(this, "Enter Product Name:", "Add Product - Step 1/5", JOptionPane.QUESTION_MESSAGE);
-        if (productName == null || productName.trim().isEmpty()) return;
+        String productTitle = JOptionPane.showInputDialog(this, "Enter Title:", "Add Product - Step 1/5", JOptionPane.QUESTION_MESSAGE);
+        if (productTitle == null || productTitle.trim().isEmpty()) return;
 
         // Step 2: Description
         String description = JOptionPane.showInputDialog(this, "Enter Description:", "Add Product - Step 2/5", JOptionPane.QUESTION_MESSAGE);
@@ -330,7 +351,7 @@ public class producttbl extends javax.swing.JFrame {
         // Confirm
         int confirm = JOptionPane.showConfirmDialog(this,
             "Product Summary:\n\n" +
-            "Name: " + productName + "\n" +
+            "Title: " + productTitle + "\n" +
             "Price: " + String.format("%.2f", price) + "\n" +
             "Quantity: " + quantity + "\n" +
             "Category: " + category + "\n\n" +
@@ -338,7 +359,8 @@ public class producttbl extends javax.swing.JFrame {
             "Confirm", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
-            if (saveProduct(productName, description, price, quantity, category)) {
+            // FIXED: Changed from updateProduct to saveProduct
+            if (saveProduct(productTitle, description, price, quantity, category)) {
                 JOptionPane.showMessageDialog(this, "Product added successfully!");
                 loadProductsTable();
             } else {
@@ -347,7 +369,8 @@ public class producttbl extends javax.swing.JFrame {
         }
     }
 
-    private boolean saveProduct(String name, String desc, double price, int qty, String category) {
+    // METHOD 2: For ADDING (5 parameters) - INSERT SQL
+    private boolean saveProduct(String title, String desc, double price, int qty, String category) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         try {
@@ -355,7 +378,7 @@ public class producttbl extends javax.swing.JFrame {
             conn = dbConfig.connectDB();
             String sql = "INSERT INTO tbl_products (product_name, description, price, quantity, category, status) VALUES (?, ?, ?, ?, ?, 'Available')";
             pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, name);
+            pstmt.setString(1, title);
             pstmt.setString(2, desc);
             pstmt.setDouble(3, price);
             pstmt.setInt(4, qty);
@@ -482,6 +505,69 @@ public class producttbl extends javax.swing.JFrame {
         }    // TODO add your handling code here:
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void searchbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbtnActionPerformed
+        String keyword = jTextField1.getText().trim();
+
+        if (keyword.isEmpty()) {
+            loadProductsTable(); // Show all products if search is empty
+            return;
+        }
+
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conf dbConfig = new conf();
+            conn = dbConfig.connectDB();
+
+            // Search products table
+            String sql = "SELECT * FROM tbl_products WHERE product_name LIKE ? OR category LIKE ? OR description LIKE ? OR product_id LIKE ?";
+            pstmt = conn.prepareStatement(sql);
+            String pattern = "%" + keyword + "%";
+            pstmt.setString(1, pattern);
+            pstmt.setString(2, pattern);
+            pstmt.setString(3, pattern);
+            pstmt.setString(4, pattern);
+            rs = pstmt.executeQuery();
+
+            boolean found = false;
+            while (rs.next()) {
+                found = true;
+                Object[] row = {
+                    rs.getInt("product_id"),
+                    rs.getString("product_name"),
+                    rs.getString("description"),
+                    String.format("%.2f", rs.getDouble("price")),
+                    rs.getInt("quantity"),
+                    rs.getString("category"),
+                    rs.getString("status")
+                };
+                model.addRow(row);
+            }
+
+            if (!found) {
+                JOptionPane.showMessageDialog(this, "No products found for: '" + keyword + "'");
+                loadProductsTable(); // Reload all products
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Search error: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_searchbtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -529,5 +615,6 @@ public class producttbl extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JButton profileBTN;
+    private javax.swing.JButton searchbtn;
     // End of variables declaration//GEN-END:variables
 }
