@@ -20,25 +20,28 @@ public class admindashboard extends javax.swing.JFrame {
     /**
      * Creates new form admindashboard
      */
-    public admindashboard() {
-      if (config.Session.getInstance().getU_id() == 0) {
-
+      public admindashboard() {
+       if (config.Session.getInstance().getU_id() == 0) {
         JOptionPane.showMessageDialog(null, "Please login first!");
         login log = new login();
         log.setVisible(true);
         this.dispose();
         return;
-
-        
+    }
+    
+    // NEW: Check if user is regular user - redirect to user dashboard
+    String userType = config.Session.getInstance().getType();
+    if (!"admin".equalsIgnoreCase(userType)) {
+        JOptionPane.showMessageDialog(this, "Access Denied! Redirecting to User Dashboard...");
+        user.userdashboard userDash = new user.userdashboard();
+        userDash.setVisible(true);
+        this.dispose();
+        return;
     }
 
-    initComponents(); // IMPORTANT: AFTER CHECK
-
-        jLabel3.setText(config.Session.getInstance().getUsername());
-// or    ((javax.swing.JTextField)name).setText(config.Session.username);
-
-        
-    }
+    initComponents();
+    jLabel3.setText(config.Session.getInstance().getUsername());
+}
 
 
     /**

@@ -153,23 +153,14 @@ public class login extends javax.swing.JFrame {
     ResultSet rs = null;
 
     try {
-        // FIXED: Check if conf.connectDB() is static or instance method
-        // If connectDB() is static: Connection conn = conf.connectDB();
-        // If connectDB() is instance method: Connection conn = new conf().connectDB();
-        
         conf dbConfig = new conf();
         conn = dbConfig.connectDB();
         
-        // Check if connection is successful
         if (conn == null) {
             JOptionPane.showMessageDialog(this, "Database connection failed!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // DEBUG: Show what email is being searched
-        System.out.println("Searching for email: [" + emailInput + "]");
-
-        // FIXED: Check both email AND status = 'Active' (case sensitive)
         String sql = "SELECT u_id, username, email, status, type, password FROM tbl_users WHERE email = ? AND status = 'Active'";
         pst = conn.prepareStatement(sql);
         pst.setString(1, emailInput);
@@ -179,8 +170,6 @@ public class login extends javax.swing.JFrame {
         if (rs.next()) {
             String dbPassword = rs.getString("password");
             String dbStatus = rs.getString("status");
-            
-            System.out.println("User found: " + rs.getString("username") + ", Status: " + dbStatus);
             
             // Check password
             if (passwordInput.equals(dbPassword)) {
@@ -196,15 +185,15 @@ public class login extends javax.swing.JFrame {
                 
                 JOptionPane.showMessageDialog(this, "Login Success! Welcome " + rs.getString("username") + "!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 
-                // Redirect based on type
+                // UPDATED: Redirect based on type
                 if ("admin".equalsIgnoreCase(userType)) {
-                    admindashboard ad = new admindashboard();
+                    // Admin login -> go to admindashboard
+                    admin.admindashboard ad = new admin.admindashboard();
                     ad.setVisible(true);
                 } else {
-                user.usertbl table = new user.usertbl();
-                table.setVisible(true);
-    
-    
+                    // User login -> go to userdashboard (UPDATED)
+                    user.userdashboard userDash = new user.userdashboard();
+                    userDash.setVisible(true);
                 }
                 
                 this.dispose();
@@ -214,7 +203,7 @@ public class login extends javax.swing.JFrame {
                 pass.setText("");
             }
         } else {
-            // DEBUG: Check if email exists but status is not Active
+            // Check if email exists but status is not Active
             String checkSql = "SELECT status FROM tbl_users WHERE email = ?";
             PreparedStatement checkStmt = conn.prepareStatement(checkSql);
             checkStmt.setString(1, emailInput);
@@ -234,7 +223,6 @@ public class login extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "Database Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         ex.printStackTrace();
     } finally {
-        // Always close resources
         try {
             if (rs != null) rs.close();
             if (pst != null) pst.close();

@@ -7,6 +7,7 @@ package user;
 
 import config.Session;
 import config.conf;
+import admin.admindashboard;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,13 +26,14 @@ public class usertbl extends javax.swing.JFrame {
      * Creates new form usertbl
      */
     public usertbl() {
-        if (Session.getInstance().getU_id() == 0) {
+     if (Session.getInstance().getU_id() == 0) {
         JOptionPane.showMessageDialog(null, "Please login first!");
         laroa.login log = new laroa.login();
         log.setVisible(true);
         this.dispose();
         return;
     }
+    
     
         initComponents();
         loadUsersTable(); // Load data when form opens
@@ -100,14 +102,13 @@ public class usertbl extends javax.swing.JFrame {
         searchbtn = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jButton8 = new javax.swing.JButton();
-        transbtn = new javax.swing.JButton();
         editbtd = new javax.swing.JButton();
         addbtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         userstbl = new javax.swing.JTable();
         deletebtn = new javax.swing.JButton();
         search = new javax.swing.JTextField();
-        userbtn1 = new javax.swing.JButton();
+        backbtn1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -134,15 +135,7 @@ public class usertbl extends javax.swing.JFrame {
                 jButton8ActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 90, 30));
-
-        transbtn.setText("Transaction");
-        transbtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                transbtnActionPerformed(evt);
-            }
-        });
-        jDesktopPane1.add(transbtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 70, 90, 30));
+        jDesktopPane1.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 70, 90, 30));
 
         editbtd.setText("Edit");
         editbtd.addActionListener(new java.awt.event.ActionListener() {
@@ -150,7 +143,7 @@ public class usertbl extends javax.swing.JFrame {
                 editbtdActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(editbtd, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 70, 90, 30));
+        jDesktopPane1.add(editbtd, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 70, 90, 30));
 
         addbtn.setText("Add");
         addbtn.addActionListener(new java.awt.event.ActionListener() {
@@ -158,7 +151,7 @@ public class usertbl extends javax.swing.JFrame {
                 addbtnActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(addbtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 70, 90, 30));
+        jDesktopPane1.add(addbtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 70, 90, 30));
 
         userstbl.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -178,7 +171,7 @@ public class usertbl extends javax.swing.JFrame {
                 deletebtnActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(deletebtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 70, 90, 30));
+        jDesktopPane1.add(deletebtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 70, 90, 30));
 
         search.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         search.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -191,13 +184,13 @@ public class usertbl extends javax.swing.JFrame {
         });
         jDesktopPane1.add(search, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 70, 140, 30));
 
-        userbtn1.setText("User");
-        userbtn1.addActionListener(new java.awt.event.ActionListener() {
+        backbtn1.setText("Back");
+        backbtn1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                userbtn1ActionPerformed(evt);
+                backbtn1ActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(userbtn1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 70, 90, 30));
+        jDesktopPane1.add(backbtn1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 70, 90, 30));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -290,14 +283,6 @@ String keyword = search.getText().trim();
     product.setVisible(true);
     this.dispose();   // TODO add your handling code here:
     }//GEN-LAST:event_jButton8ActionPerformed
-
-    private void transbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transbtnActionPerformed
- user.transaction trans = new user.transaction();
-    trans.setVisible(true);
-    this.dispose();
-
-                      // TODO add your handling code here:
-    }//GEN-LAST:event_transbtnActionPerformed
 
     private void editbtdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editbtdActionPerformed
     int selectedRow = userstbl.getSelectedRow();
@@ -595,9 +580,9 @@ private boolean addUserToDatabase(String username, String email, String password
     }
     }//GEN-LAST:event_searchActionPerformed
 
-    private void userbtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userbtn1ActionPerformed
+    private void backbtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backbtn1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_userbtn1ActionPerformed
+    }//GEN-LAST:event_backbtn1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -636,6 +621,7 @@ private boolean addUserToDatabase(String username, String email, String password
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addbtn;
+    private javax.swing.JButton backbtn1;
     private javax.swing.JButton deletebtn;
     private javax.swing.JButton editbtd;
     private javax.swing.JButton jButton8;
@@ -644,8 +630,6 @@ private boolean addUserToDatabase(String username, String email, String password
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField search;
     private javax.swing.JButton searchbtn;
-    private javax.swing.JButton transbtn;
-    private javax.swing.JButton userbtn1;
     private javax.swing.JTable userstbl;
     // End of variables declaration//GEN-END:variables
 }

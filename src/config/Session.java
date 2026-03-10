@@ -11,37 +11,17 @@ public class Session {
     
     // Private constructor to prevent instantiation
     private Session() {
-        this.u_id = 0;
-        this.username = "";
-        this.email = "";
-        this.type = "";
-        this.status = "";
+        
     }
 
     // Get singleton instance
-    public static synchronized Session getInstance() {
+    public static Session getInstance() {
         if (instance == null) {
             instance = new Session();
         }
         return instance;
     }
     
-    // Check if instance is null
-    public static boolean isInstanceEmpty() {
-        return instance == null;
-    }
-    
-    // Clear session data
-    public void clearSession() {
-        this.u_id = 0;
-        this.username = "";
-        this.email = "";
-        this.type = "";
-        this.status = "";
-        instance = null;
-    }
-
-    // Getters and Setters
     public int getU_id() {
         return u_id;
     }
@@ -81,4 +61,14 @@ public class Session {
     public void setStatus(String status) {
         this.status = status;
     }
+    
+    public void clearSession() {
+        u_id = 0;
+        username = null;
+        email = null;
+        status = null;
+        type = null;
+    
+    }
+    
 }
