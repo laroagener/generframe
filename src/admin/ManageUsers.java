@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package user;
+package admin;
 
 import config.Session;
 import config.conf;
@@ -20,12 +20,12 @@ import laroa.login;
  *
  * @author USER23
  */
-public class usertbl extends javax.swing.JFrame {
+public class ManageUsers extends javax.swing.JFrame {
 
     /**
      * Creates new form usertbl
      */
-    public usertbl() {
+    public ManageUsers() {
      if (Session.getInstance().getU_id() == 0) {
         JOptionPane.showMessageDialog(null, "Please login first!");
         laroa.login log = new laroa.login();
@@ -126,8 +126,8 @@ public class usertbl extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("DASHBOARD");
-        jDesktopPane1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 20, -1, -1));
+        jLabel2.setText("Users");
+        jDesktopPane1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 20, 120, -1));
 
         jButton8.setText("Product");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
@@ -581,7 +581,9 @@ private boolean addUserToDatabase(String username, String email, String password
     }//GEN-LAST:event_searchActionPerformed
 
     private void backbtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backbtn1ActionPerformed
-        // TODO add your handling code here:
+     admin.ManageUsers MU = new admin.ManageUsers();
+    MU.setVisible(true);
+    this.dispose();
     }//GEN-LAST:event_backbtn1ActionPerformed
 
     /**
@@ -601,20 +603,21 @@ private boolean addUserToDatabase(String username, String email, String password
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(usertbl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageUsers.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(usertbl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageUsers.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(usertbl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageUsers.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(usertbl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageUsers.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new usertbl().setVisible(true);
+                new ManageUsers().setVisible(true);
             }
         });
     }

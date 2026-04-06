@@ -8,7 +8,6 @@ package admin;
 import javax.swing.JOptionPane;
 import laroa.UProfile;
 import laroa.login;
-import user.usertbl;
 
 
 /**
@@ -183,7 +182,7 @@ public class admindashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        usertbl userstbl = new usertbl();
+        ManageUsers userstbl = new ManageUsers();
         userstbl.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton10ActionPerformed

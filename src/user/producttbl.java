@@ -209,14 +209,14 @@ public class producttbl extends javax.swing.JFrame {
     }//GEN-LAST:event_profileBTNActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-       user.usertbl userstbl = new user.usertbl();  // <-- ADD "user." package
-        userstbl.setVisible(true);
-        this.dispose();       
+    admin.ManageBooks mb = new admin.ManageBooks();
+    mb.setVisible(true);
+    this.dispose();       
       // TODO add your handling code here:
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-     user.usertbl users = new user.usertbl();
+     admin.ManageUsers users = new admin.ManageUsers();
         users.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton10ActionPerformed

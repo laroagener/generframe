@@ -6,6 +6,7 @@
 package laroa;
 
 import admin.admindashboard;
+import admin.adminlanding;  
 import config.Session;
 import config.conf;
 import java.security.NoSuchAlgorithmException;
@@ -184,19 +185,19 @@ public class login extends javax.swing.JFrame {
                 String userType = rs.getString("type");
                 
                 JOptionPane.showMessageDialog(this, "Login Success! Welcome " + rs.getString("username") + "!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                
-                // UPDATED: Redirect based on type
-                if ("admin".equalsIgnoreCase(userType)) {
-                    // Admin login -> go to admindashboard
-                    admin.admindashboard ad = new admin.admindashboard();
-                    ad.setVisible(true);
-                } else {
-                    // User login -> go to userdashboard (UPDATED)
-                    user.userdashboard userDash = new user.userdashboard();
-                    userDash.setVisible(true);
-                }
-                
-                this.dispose();
+
+// Redirect based on user type
+if ("admin".equalsIgnoreCase(userType)) {
+    // Admin -> go to adminlanding
+    admin.adminlanding ad = new admin.adminlanding();
+    ad.setVisible(true);
+} else {
+    // User -> go to userdashboard
+    user.userdashboard userDash = new user.userdashboard();
+    userDash.setVisible(true);
+}
+
+this.dispose();
                 
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid Password!", "Error", JOptionPane.ERROR_MESSAGE);

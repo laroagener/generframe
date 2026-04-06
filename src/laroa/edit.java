@@ -274,7 +274,7 @@ private void loadUserData() {
             JOptionPane.showMessageDialog(this, "User updated successfully!");
 
             // Go back to user table
-            user.usertbl userTable = new user.usertbl();
+            admin.ManageUsers userTable = new admin.ManageUsers();
             userTable.setVisible(true);
             this.dispose();
         } else {
@@ -315,7 +315,7 @@ private void loadUserData() {
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        user.usertbl userTable = new user.usertbl();
+        admin.ManageUsers userTable = new admin.ManageUsers();
         userTable.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed

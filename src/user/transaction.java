@@ -246,7 +246,7 @@ String keyword = search.getText().trim();
     }//GEN-LAST:event_searchbtnActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-                user.usertbl table = new user.usertbl();
+                admin.ManageUsers table = new admin.ManageUsers();
                 table.setVisible(true);
                 this.dispose();
     }//GEN-LAST:event_jButton8ActionPerformed

@@ -3,43 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package user;
-
-import laroa.UProfile;
-import laroa.login;
-import config.Session;
-import javax.swing.JOptionPane;
-
+package admin;
+import user.producttbl;
+import user.transaction;
 /**
  *
- * @author USER33
+ * @author SCC-28
  */
-public class userdashboard extends javax.swing.JFrame {
+public class ManageBooks extends javax.swing.JFrame {
 
     /**
-     * Creates new form userdashboard
+     * Creates new form ManageBooks
      */
-    public userdashboard() {
-             if (Session.getInstance().getU_id() == 0) {
-        JOptionPane.showMessageDialog(null, "Please login first!");
-        laroa.login log = new laroa.login();
-        log.setVisible(true);
-        this.dispose();
-        return;
+    public ManageBooks() {
+        initComponents();
     }
-    
-    // NEW: Check if user is admin - redirect to admin dashboard
-    String userType = Session.getInstance().getType();
-    if ("admin".equalsIgnoreCase(userType)) {
-        JOptionPane.showMessageDialog(this, "Admins cannot access user dashboard. Redirecting to Admin Dashboard...");
-        admin.admindashboard adminDash = new admin.admindashboard();
-        adminDash.setVisible(true);
-        this.dispose();
-        return;
-    }
-    
-    initComponents();
-}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -53,12 +31,11 @@ public class userdashboard extends javax.swing.JFrame {
         jDesktopPane1 = new javax.swing.JDesktopPane();
         jLabel1 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -77,15 +54,7 @@ public class userdashboard extends javax.swing.JFrame {
                 jButton4ActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 400, 170, 70));
-
-        jButton3.setText("My Profile");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        jDesktopPane1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 280, 170, 70));
+        jDesktopPane1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 400, 170, 70));
 
         jLabel2.setFont(new java.awt.Font("Elephant", 1, 36)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -96,26 +65,26 @@ public class userdashboard extends javax.swing.JFrame {
         jLabel3.setText("jLabel3");
         jDesktopPane1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 0, 210, 200));
 
-        jButton2.setText("View Transactions");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        jDesktopPane1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 170, 170, 70));
-
         jLabel4.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("USER DASHBOARD");
-        jDesktopPane1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 20, -1, -1));
+        jLabel4.setText("Manage Books");
+        jDesktopPane1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 20, -1, -1));
 
-        jButton5.setText("Create Transaction");
+        jButton5.setText("Update Status");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 70, 170, 70));
+        jDesktopPane1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 260, 170, 70));
+
+        jButton6.setText("View Orders");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+        jDesktopPane1.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 120, 170, 70));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -141,28 +110,21 @@ public class userdashboard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        laroa.UProfile profile = new laroa.UProfile();
-        profile.setVisible(true);
-        this.dispose();        
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-     JOptionPane.showMessageDialog(this, "View Transactions - To be implemented");
-    }//GEN-LAST:event_jButton2ActionPerformed
-
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        Session.getInstance().clearSession();
-        laroa.login log = new laroa.login();
-        log.setVisible(true);
-        this.dispose();
+    
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-    admin.ManageUsers table = new admin.ManageUsers();
-    table.setVisible(true);
+    user.producttbl pt = new user.producttbl();
+    pt.setVisible(true);
+    this.dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+     user.transaction trans = new user.transaction();
+    trans.setVisible(true);
+    this.dispose();
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -181,29 +143,28 @@ public class userdashboard extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(userdashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageBooks.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(userdashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageBooks.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(userdashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageBooks.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(userdashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageBooks.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new userdashboard().setVisible(true);
+                new ManageBooks().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
