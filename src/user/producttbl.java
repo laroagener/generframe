@@ -11,11 +11,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author PC 11
  */
 public class producttbl extends javax.swing.JFrame {
+    private int productId;
     public producttbl() {
      // Check session FIRST before anything else
     if (Session.getInstance().getU_id() == 0) {
@@ -223,91 +225,22 @@ public class producttbl extends javax.swing.JFrame {
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
     int selectedRow = jTable1.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a product to edit");
-            return;
-        }
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Please select a product to edit.");
+        return;
+    }
 
-        int productId = (int) jTable1.getValueAt(selectedRow, 0);
-        String currentTitle = (String) jTable1.getValueAt(selectedRow, 1);
-        
-        // FIX: Handle Price and Quantity as Objects, then convert to String
-        Object priceObj = jTable1.getValueAt(selectedRow, 3);
-        Object qtyObj = jTable1.getValueAt(selectedRow, 4);
-        
-        String currentPrice = priceObj.toString();
-        String currentQty = qtyObj.toString();
+    int productId = (int) jTable1.getValueAt(selectedRow, 0);
+    String productName = (String) jTable1.getValueAt(selectedRow, 1);
+    String description = (String) jTable1.getValueAt(selectedRow, 2);
+    String price = jTable1.getValueAt(selectedRow, 3).toString();
+    String quantity = jTable1.getValueAt(selectedRow, 4).toString();
+    String category = (String) jTable1.getValueAt(selectedRow, 5);
 
-        // Edit Title
-        String newTitle = JOptionPane.showInputDialog(this, "Edit Title:", currentTitle);
-        if (newTitle == null) return;
-        if (newTitle.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Title cannot be empty!");
-            return;
-        }
-
-        // Edit Price
-        String priceStr = JOptionPane.showInputDialog(this, "Edit Price:", currentPrice);
-        if (priceStr == null) return;
-        double newPrice;
-        try {
-            newPrice = Double.parseDouble(priceStr.trim());
-            if (newPrice < 0) throw new NumberFormatException();
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Invalid price!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Edit Quantity
-        String qtyStr = JOptionPane.showInputDialog(this, "Edit Quantity:", currentQty);
-        if (qtyStr == null) return;
-        int newQty;
-        try {
-            newQty = Integer.parseInt(qtyStr.trim());
-            if (newQty < 0) throw new NumberFormatException();
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Invalid quantity!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        if (updateProduct(productId, newTitle, newPrice, newQty)) {
-            JOptionPane.showMessageDialog(this, "Product updated successfully!");
-            loadProductsTable();
-        } else {
-            JOptionPane.showMessageDialog(this, "Update failed!", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }                                         
-
-    // METHOD 1: For EDITING (4 parameters) - UPDATE SQL
-    private boolean updateProduct(int id, String title, double price, int qty) {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        try {
-            conf dbConfig = new conf();
-            conn = dbConfig.connectDB();
-            
-            // Auto-update status based on quantity
-            String status = (qty > 0) ? "Available" : "Out of Stock";
-            
-            String sql = "UPDATE tbl_products SET product_name = ?, price = ?, quantity = ?, status = ? WHERE product_id = ?";
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, title);
-            pstmt.setDouble(2, price);
-            pstmt.setInt(3, qty);
-            pstmt.setString(4, status);
-            pstmt.setInt(5, id);
-            return pstmt.executeUpdate() > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            try {
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }    // TODO add your handling code here:
+    admin.editbooks editForm = new admin.editbooks(productId, productName, description, price, quantity, category);
+    editForm.setVisible(true);
+    this.dispose();
+    // TODO add your handling code here:
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed

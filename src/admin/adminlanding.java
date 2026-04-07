@@ -33,7 +33,6 @@ public class adminlanding extends javax.swing.JFrame {
         jDesktopPane1 = new javax.swing.JDesktopPane();
         jLabel1 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
@@ -58,15 +57,7 @@ public class adminlanding extends javax.swing.JFrame {
                 jButton4ActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 480, 170, 70));
-
-        jButton3.setText("Manage Orders");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        jDesktopPane1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 280, 170, 70));
+        jDesktopPane1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 460, 170, 70));
 
         jLabel2.setFont(new java.awt.Font("Elephant", 1, 36)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -83,7 +74,7 @@ public class adminlanding extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 170, 170, 70));
+        jDesktopPane1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 200, 170, 70));
 
         jLabel4.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -96,7 +87,7 @@ public class adminlanding extends javax.swing.JFrame {
                 jButton5ActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 70, 170, 70));
+        jDesktopPane1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 70, 170, 70));
 
         jButton6.setText("Reports");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
@@ -104,7 +95,7 @@ public class adminlanding extends javax.swing.JFrame {
                 jButton6ActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 380, 170, 70));
+        jDesktopPane1.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 330, 170, 70));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -136,12 +127,6 @@ public class adminlanding extends javax.swing.JFrame {
         log.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-    user.transaction trans = new user.transaction();
-    trans.setVisible(true);
-    this.dispose();
-    }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
      admin.ManageUsers MU = new admin.ManageUsers();
@@ -204,7 +189,6 @@ private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
