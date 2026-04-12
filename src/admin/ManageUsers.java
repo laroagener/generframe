@@ -581,8 +581,8 @@ private boolean addUserToDatabase(String username, String email, String password
     }//GEN-LAST:event_searchActionPerformed
 
     private void backbtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backbtn1ActionPerformed
-    admin.ManageBooks mb = new admin.ManageBooks();
-    mb.setVisible(true);
+    admin.adminlanding ad = new admin.adminlanding();
+    ad.setVisible(true);
     this.dispose();
     }//GEN-LAST:event_backbtn1ActionPerformed
 

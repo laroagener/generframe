@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package user;
-
+import user.CreateTransac;
 import laroa.UProfile;
 import laroa.login;
 import config.Session;
@@ -96,7 +96,7 @@ public class userdashboard extends javax.swing.JFrame {
         jLabel3.setText("jLabel3");
         jDesktopPane1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 0, 210, 200));
 
-        jButton2.setText("View Transactions");
+        jButton2.setText("View My Transactions");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -148,7 +148,9 @@ public class userdashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-     JOptionPane.showMessageDialog(this, "View Transactions - To be implemented");
+       user.ViewTransac vt = new user.ViewTransac();
+        vt.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -159,8 +161,8 @@ public class userdashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-     user.transaction trans = new user.transaction();
-    trans.setVisible(true);
+    user.CreateTransac ct = new user.CreateTransac();
+    ct.setVisible(true);
     this.dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
 
