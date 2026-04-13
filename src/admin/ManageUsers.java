@@ -301,75 +301,10 @@ String keyword = search.getText().trim();
     }//GEN-LAST:event_editbtdActionPerformed
 
     private void addbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addbtnActionPerformed
-        // Step 1: Get Username
-    String username = JOptionPane.showInputDialog(this, "Enter Username:", "Add User - Step 1/4", JOptionPane.QUESTION_MESSAGE);
-    
-    // Check if user cancelled
-    if (username == null) {
-        return; // User clicked Cancel
-    }
-    
-    // Validate username
-    if (username.trim().isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Username cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    
-    // Check if username already exists
-    if (isUsernameExists(username.trim())) {
-        JOptionPane.showMessageDialog(this, "Username already exists!", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    
-    // Step 2: Get Email
-    String email = JOptionPane.showInputDialog(this, "Enter Email:", "Add User - Step 2/4", JOptionPane.QUESTION_MESSAGE);
-    
-    if (email == null) {
-        return; // User clicked Cancel
-    }
-    
-    // Validate email
-    if (email.trim().isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Email cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    
-    // Check if email already exists
-    if (isEmailExists(email.trim())) {
-        JOptionPane.showMessageDialog(this, "Email already exists!", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    
-    // Step 3: Get Password
-    String password = JOptionPane.showInputDialog(this, "Enter Password:", "Add User - Step 3/4", JOptionPane.QUESTION_MESSAGE);
-    
-    if (password == null) {
-        return; // User clicked Cancel
-    }
-    
-    // Validate password
-    if (password.trim().isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Password cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    
-    // Step 4: Confirm and Add
-    int confirm = JOptionPane.showConfirmDialog(this, 
-        "Add user '" + username + "' to database?", 
-        "Add User - Step 4/4", 
-        JOptionPane.OK_CANCEL_OPTION);
-    
-    if (confirm != JOptionPane.OK_OPTION) {
-        return; // User cancelled
-    }
-    
-    // Add user to database
-    if (addUserToDatabase(username.trim(), email.trim(), password)) {
-        JOptionPane.showMessageDialog(this, "Added completely!", "Success", JOptionPane.INFORMATION_MESSAGE);
-        loadUsersTable(); // Refresh the table
-    } else {
-        JOptionPane.showMessageDialog(this, "Failed to add user!", "Error", JOptionPane.ERROR_MESSAGE);
-    }
+     // Open the adduser form instead of using dialogs
+        admin.adduser addUserForm = new admin.adduser();
+        addUserForm.setVisible(true);
+        this.dispose();
 }
 
 // Helper method: Check if username exists

@@ -7,26 +7,22 @@ package admin;
 import config.conf;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+
 /**
  *
- * @author USER30
+ * @author SCC-28
  */
-public class editbooks extends javax.swing.JFrame {
-private int productId;
+public class adduser extends javax.swing.JFrame {
+
     /**
-     * Creates new form editbooks
+     * Creates new form edituser
      */
-    public editbooks() {
+    public adduser() {
         initComponents();
     }
-    public editbooks(int productId, String name, String description, String price, String quantity, String category) {
-    this.productId = productId;
-    initComponents();
-    email.setText(name);        // Books Title
-    email1.setText(price);      // Books Price
-    email2.setText(quantity);   // Books Quantity
-}
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -94,20 +90,20 @@ private int productId;
         jPanel1.add(email2, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 320, 230, 40));
 
         jLabel3.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jLabel3.setText("Books Quantity:");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 330, 140, 30));
+        jLabel3.setText("PASSWORD:");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 330, 110, 30));
 
         jLabel4.setFont(new java.awt.Font("Century Gothic", 1, 36)); // NOI18N
-        jLabel4.setText("EDIT BOOKS");
+        jLabel4.setText("ADD USER");
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 40, 230, 50));
 
         jLabel5.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jLabel5.setText("Books Price:");
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 250, 110, 30));
+        jLabel5.setText("EMAIL:");
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 250, 70, 30));
 
         jLabel6.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jLabel6.setText("Books Title:");
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 180, 100, 30));
+        jLabel6.setText("USER NAME:");
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 180, 110, 30));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -128,72 +124,134 @@ private int productId;
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-      user.transaction trans = new user.transaction();
-    trans.setVisible(true);
-    this.dispose();
+        admin.ManageUsers manageUsers = new admin.ManageUsers();
+        manageUsers.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-    String newTitle = email.getText().trim();
-    String newPrice = email1.getText().trim();
-    String newQty = email2.getText().trim();
+       String username = email.getText().trim();      // email field = username
+       String email = email1.getText().trim();        // email1 field = email  
+       String password = email2.getText().trim();     // email2 field = password
 
-    if (newTitle.isEmpty() || newPrice.isEmpty() || newQty.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Fields cannot be empty!");
-        return;
-    }
+        // Validate fields
+        if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "All fields are required!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    double price;
-    int qty;
-    try {
-        price = Double.parseDouble(newPrice);
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Invalid price!", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    try {
-        qty = Integer.parseInt(newQty);
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Invalid quantity!", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+        // Check if username exists
+        if (isUsernameExists(username)) {
+            JOptionPane.showMessageDialog(this, "Username already exists!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    Connection conn = null;
-    PreparedStatement pstmt = null;
-    try {
-        conf dbConfig = new conf();
-        conn = dbConfig.connectDB();
-        String status = (qty > 0) ? "Available" : "Out of Stock";
+        // Check if email exists
+        if (isEmailExists(email)) {
+            JOptionPane.showMessageDialog(this, "Email already exists!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-        // Make sure only 5 ? and 5 setXxx calls
-        String sql = "UPDATE tbl_products SET product_name=?, price=?, quantity=?, status=? WHERE product_id=?";
-        pstmt = conn.prepareStatement(sql);
-        pstmt.setString(1, newTitle);   // product_name
-        pstmt.setDouble(2, price);      // price
-        pstmt.setInt(3, qty);           // quantity
-        pstmt.setString(4, status);     // status
-        pstmt.setInt(5, productId);     // WHERE product_id
-
-        if (pstmt.executeUpdate() > 0) {
-            JOptionPane.showMessageDialog(this, "Product updated successfully!");
-            user.producttbl productTable = new user.producttbl();
-            productTable.setVisible(true);
+        // Save to database
+        if (addUserToDatabase(username, email, password)) {
+            JOptionPane.showMessageDialog(this, "User added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            // Go back to ManageUsers
+            admin.ManageUsers manageUsers = new admin.ManageUsers();
+            manageUsers.setVisible(true);
             this.dispose();
         } else {
-            JOptionPane.showMessageDialog(this, "Update failed!");
+            JOptionPane.showMessageDialog(this, "Failed to add user!", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
-        e.printStackTrace();
-    } finally {
+    }                                        
+
+    // Helper method: Check if username exists
+    private boolean isUsernameExists(String username) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        
         try {
-            if (pstmt != null) pstmt.close();
-            if (conn != null) conn.close();
-        } catch (Exception e) { e.printStackTrace(); }
+            conf dbConfig = new conf();
+            conn = dbConfig.connectDB();
+            String sql = "SELECT u_id FROM tbl_users WHERE username = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            rs = pstmt.executeQuery();
+            return rs.next();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
+    // Helper method: Check if email exists
+    private boolean isEmailExists(String email) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        
+        try {
+            conf dbConfig = new conf();
+            conn = dbConfig.connectDB();
+            String sql = "SELECT u_id FROM tbl_users WHERE email = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, email);
+            rs = pstmt.executeQuery();
+            return rs.next();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-    // TODO add your handling code here:
+    // Helper method: Add user to database
+    private boolean addUserToDatabase(String username, String email, String password) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        
+        try {
+            conf dbConfig = new conf();
+            conn = dbConfig.connectDB();
+            
+            String sql = "INSERT INTO tbl_users (username, email, password, type, status) VALUES (?, ?, ?, 'user', 'Active')";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            pstmt.setString(2, email);
+            pstmt.setString(3, password);
+            
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailActionPerformed
@@ -225,20 +283,21 @@ private int productId;
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(editbooks.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(adduser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(editbooks.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(adduser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(editbooks.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(adduser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(editbooks.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(adduser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new editbooks().setVisible(true);
+                new adduser().setVisible(true);
             }
         });
     }

@@ -266,8 +266,8 @@ public class ViewTransac extends javax.swing.JFrame {
     }//GEN-LAST:event_searchbtnActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-      user.CreateTransac ct = new user.CreateTransac();
-        ct.setVisible(true);
+     user.userdashboard dashboard = new user.userdashboard();
+        dashboard.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton8ActionPerformed
 

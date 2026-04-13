@@ -97,7 +97,6 @@ public class CreateTransac extends javax.swing.JFrame {
         searchbtn = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jButton8 = new javax.swing.JButton();
-        viewordersbtn = new javax.swing.JButton();
         buybtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         transactiontbl = new javax.swing.JTable();
@@ -131,21 +130,13 @@ public class CreateTransac extends javax.swing.JFrame {
         });
         jDesktopPane1.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 70, 90, 30));
 
-        viewordersbtn.setText("View my Orders");
-        viewordersbtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewordersbtnActionPerformed(evt);
-            }
-        });
-        jDesktopPane1.add(viewordersbtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 70, 130, 30));
-
         buybtn.setText("Select / Buy");
         buybtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buybtnActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(buybtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 70, 120, 30));
+        jDesktopPane1.add(buybtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 70, 120, 30));
 
         transactiontbl.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -165,7 +156,7 @@ public class CreateTransac extends javax.swing.JFrame {
                 refreshbtnActionPerformed(evt);
             }
         });
-        jDesktopPane1.add(refreshbtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 70, 90, 30));
+        jDesktopPane1.add(refreshbtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 70, 90, 30));
 
         search.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         search.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -260,189 +251,25 @@ rs = pstmt.executeQuery();
         this.dispose();
     }//GEN-LAST:event_jButton8ActionPerformed
 
-    private void viewordersbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewordersbtnActionPerformed
-        user.ViewTransac vt = new user.ViewTransac();
-        vt.setVisible(true);
-        this.dispose();
-    
-    }
-
-    private boolean updateTransaction(int transId, String customerName, String paymentMethod) {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-
-        try {
-            conf dbConfig = new conf();
-            conn = dbConfig.connectDB();
-            String sql = "UPDATE tbl_transactions SET customer_name = ?, payment_method = ? WHERE transaction_id = ?";
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, customerName);
-            pstmt.setString(2, paymentMethod);
-            pstmt.setInt(3, transId);
-            return pstmt.executeUpdate() > 0;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-            return false;
-        } finally {
-            try {
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }//GEN-LAST:event_viewordersbtnActionPerformed
-
     private void buybtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buybtnActionPerformed
-     int selectedRow = transactiontbl.getSelectedRow();
+    int selectedRow = transactiontbl.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Please select a product to buy");
             return;
         }
 
+        // Get product data from table
         int productId = (int) transactiontbl.getValueAt(selectedRow, 0);
         String productName = (String) transactiontbl.getValueAt(selectedRow, 1);
         double price = Double.parseDouble(transactiontbl.getValueAt(selectedRow, 3).toString());
         int availableStock = (int) transactiontbl.getValueAt(selectedRow, 4);
 
-        String customerName = JOptionPane.showInputDialog(this, "Enter Customer Name:", "New Transaction", JOptionPane.QUESTION_MESSAGE);
-        if (customerName == null || customerName.trim().isEmpty()) return;
+        // OPEN BUYBOOKS FORM with product data (NO MORE DIALOGS!)
+        user.buybooks buyForm = new user.buybooks(productId, productName, price, availableStock);
+        buyForm.setVisible(true);
+        this.dispose();
+                                                  
 
-        String qtyStr = JOptionPane.showInputDialog(this,
-            "Product: " + productName + "\nPrice: " + String.format("%.2f", price) + 
-            "\nAvailable: " + availableStock + "\n\nEnter Quantity:",
-            "Enter Quantity", JOptionPane.QUESTION_MESSAGE);
-        if (qtyStr == null) return;
-
-        int quantity;
-        try {
-            quantity = Integer.parseInt(qtyStr.trim());
-            if (quantity <= 0) throw new NumberFormatException();
-            if (quantity > availableStock) {
-                JOptionPane.showMessageDialog(this, "Not enough stock! Available: " + availableStock, "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Invalid quantity!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        String[] paymentOptions = {"Cash", "Credit Card", "Debit Card", "Online Payment"};
-        String paymentMethod = (String) JOptionPane.showInputDialog(this,
-            "Select Payment Method:", "Payment Method",
-            JOptionPane.QUESTION_MESSAGE, null, paymentOptions, paymentOptions[0]);
-        if (paymentMethod == null) return;
-
-        double totalAmount = quantity * price;
-
-        int confirm = JOptionPane.showConfirmDialog(this,
-            "Transaction Summary:\n\n" +
-            "Customer: " + customerName + "\n" +
-            "Product: " + productName + "\n" +
-            "Quantity: " + quantity + "\n" +
-            "Total: " + String.format("%.2f", totalAmount) + "\n" +
-            "Payment: " + paymentMethod + "\n\n" +
-            "Confirm transaction?",
-            "Confirm Transaction", JOptionPane.YES_NO_OPTION);
-        
-        if (confirm != JOptionPane.YES_OPTION) return;
-
-        if (saveTransaction(customerName, productId, productName, quantity, price, totalAmount, paymentMethod)) {
-            JOptionPane.showMessageDialog(this, "Transaction completed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            loadProductsTable();
-            showReceipt(customerName, productName, quantity, price, totalAmount, paymentMethod);
-        } else {
-            JOptionPane.showMessageDialog(this, "Transaction failed!", "Error", JOptionPane.ERROR_MESSAGE);{
-        }
-        }
-        }
-        private boolean saveTransaction(String customerName, int productId, String productName, int quantity,
-        double price, double totalAmount, String paymentMethod) {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-
-        try {
-            conf dbConfig = new conf();
-            conn = dbConfig.connectDB();
-            conn.setAutoCommit(false);
-
-            String sqlTrans = "INSERT INTO tbl_transactions (u_id, customer_name, total_amount, payment_method) VALUES (?, ?, ?, ?)";
-            pstmt = conn.prepareStatement(sqlTrans, Statement.RETURN_GENERATED_KEYS);
-            pstmt.setInt(1, Session.getInstance().getU_id());
-            pstmt.setString(2, customerName);
-            pstmt.setDouble(3, totalAmount);
-            pstmt.setString(4, paymentMethod);
-            pstmt.executeUpdate();
-
-            rs = pstmt.getGeneratedKeys();
-            int transId = 0;
-            if (rs.next()) transId = rs.getInt(1);
-
-            String sqlItem = "INSERT INTO tbl_transaction_items (transaction_id, product_id, book_title, quantity, price, subtotal) VALUES (?, ?, ?, ?, ?, ?)";
-            pstmt = conn.prepareStatement(sqlItem);
-            pstmt.setInt(1, transId);
-            pstmt.setInt(2, productId);
-            pstmt.setString(3, productName);
-            pstmt.setInt(4, quantity);
-            pstmt.setDouble(5, price);
-            pstmt.setDouble(6, totalAmount);
-            pstmt.executeUpdate();
-
-            String sqlUpdateStock = "UPDATE tbl_products SET quantity = quantity - ? WHERE product_id = ?";
-            pstmt = conn.prepareStatement(sqlUpdateStock);
-            pstmt.setInt(1, quantity);
-            pstmt.setInt(2, productId);
-            pstmt.executeUpdate();
-
-            conn.commit();
-            return true;
-        } catch (Exception e) {
-            try { if (conn != null) conn.rollback(); } catch (Exception ex) { ex.printStackTrace(); }
-            JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-            return false;
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conn != null) { conn.setAutoCommit(true); conn.close(); }
-            } catch (Exception e) { e.printStackTrace(); }
-        }
-    }
-
-    private void showReceipt(String customerName, String bookTitle, int quantity,
-            double price, double totalAmount, String paymentMethod) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String date = sdf.format(new Date());
-
-        StringBuilder receipt = new StringBuilder();
-        receipt.append("========================================\n");
-        receipt.append("        NOVEL'S BOOK SHOP\n");
-        receipt.append("           SALES RECEIPT\n");
-        receipt.append("========================================\n");
-        receipt.append("Date: ").append(date).append("\n");
-        receipt.append("Customer: ").append(customerName).append("\n");
-        receipt.append("Cashier: ").append(Session.getInstance().getUsername()).append("\n");
-        receipt.append("----------------------------------------\n");
-        receipt.append(String.format("%-20s %3s %10s\n", "Item", "Qty", "Amount"));
-        receipt.append("----------------------------------------\n");
-        String shortTitle = bookTitle.length() > 20 ? bookTitle.substring(0, 17) + "..." : bookTitle;
-        receipt.append(String.format("%-20s %3d %10.2f\n", shortTitle, quantity, totalAmount));
-        receipt.append("----------------------------------------\n");
-        receipt.append(String.format("%-24s %10.2f\n", "TOTAL:", totalAmount));
-        receipt.append(String.format("%-24s %10s\n", "Payment:", paymentMethod));
-        receipt.append("========================================\n");
-        receipt.append("     Thank you for your purchase!\n");
-        receipt.append("========================================\n");
-
-        javax.swing.JTextArea textArea = new javax.swing.JTextArea(receipt.toString());
-        textArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 12));
-        textArea.setEditable(false);
-        javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
-        scrollPane.setPreferredSize(new java.awt.Dimension(400, 400));
-        JOptionPane.showMessageDialog(this, scrollPane, "Receipt", JOptionPane.INFORMATION_MESSAGE);
     
     }//GEN-LAST:event_buybtnActionPerformed
 
@@ -551,6 +378,5 @@ rs = pstmt.executeQuery();
     private javax.swing.JTextField search;
     private javax.swing.JButton searchbtn;
     private javax.swing.JTable transactiontbl;
-    private javax.swing.JButton viewordersbtn;
     // End of variables declaration//GEN-END:variables
 }
