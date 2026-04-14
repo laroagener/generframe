@@ -4,14 +4,12 @@
  * and open the template in the editor.
  */
 package admin;
-
 import config.conf;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-
 /**
  *
  * @author USER16
@@ -23,8 +21,9 @@ public class tblsreports extends javax.swing.JFrame {
      */
     public tblsreports() {
         initComponents();
-        initializeTable();      // ← ADD THIS LINE
-        loadTransactionsTable(); // ← ADD THIS LINE
+        initializeTable();      // ← ADD THIS - sets up table columns
+        loadTransactionsTable(); // ← ADD THIS - loads data from database
+         
     }
 
     /**
@@ -124,9 +123,26 @@ public class tblsreports extends javax.swing.JFrame {
             loadTransactionsTable();
             return;
         }
+        searchTransactions(keyword);
+    
+        
 
+    
+    }//GEN-LAST:event_searchbtnActionPerformed
+
+    private void backbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backbtnActionPerformed
+       new adminlanding().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_backbtnActionPerformed
+
+    private void searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchActionPerformed
+     searchbtnActionPerformed(evt);
+    }
+        private void searchTransactions(String keyword) {
+        
+      
         DefaultTableModel model = (DefaultTableModel) transactiontbl.getModel();
-        model.setRowCount(0);
+        model.setRowCount(0);  // Clear the table
 
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -136,7 +152,7 @@ public class tblsreports extends javax.swing.JFrame {
             conf dbConfig = new conf();
             conn = dbConfig.connectDB();
             String sql = "SELECT t.transaction_id, t.customer_name, t.total_amount, t.transaction_date, " +
-            "t.payment_method, t.u_id as cashier " +
+            "t.payment_method, u.username as cashier " +
             "FROM tbl_transactions t JOIN tbl_users u ON t.u_id = u.u_id " +
             "WHERE t.customer_name LIKE ? OR t.transaction_id LIKE ? " +
             "ORDER BY t.transaction_date DESC";
@@ -150,7 +166,7 @@ public class tblsreports extends javax.swing.JFrame {
                 Object[] row = {
                     rs.getInt("transaction_id"),
                     rs.getString("customer_name"),
-                    String.format("%.2f", rs.getDouble("total_amount")),
+                    String.format("₱%.2f", rs.getDouble("total_amount")),
                     rs.getString("transaction_date"),
                     rs.getString("payment_method"),
                     rs.getString("cashier")
@@ -159,6 +175,7 @@ public class tblsreports extends javax.swing.JFrame {
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Search error: " + e.getMessage());
+            e.printStackTrace();
         } finally {
             try {
                 if (rs != null) rs.close();
@@ -168,53 +185,38 @@ public class tblsreports extends javax.swing.JFrame {
                 e.printStackTrace();
             }
         }
-    }//GEN-LAST:event_searchbtnActionPerformed
-
-    private void backbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backbtnActionPerformed
-        admin.ManageBooks mb = new admin.ManageBooks();
-        mb.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_backbtnActionPerformed
-
-    private void searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchActionPerformed
-        searchbtnActionPerformed(evt);
-    }  // ← FIX: Remove extra } and add this one
-
-    // ============================================
-    // INSERT ALL NEW METHODS HERE (copy from below)
-    // ============================================
-    
-    private void initializeTable() {
+      }
+        private void initializeTable() {
         String[] columns = {
             "Transaction ID", 
             "Customer Name", 
             "Total Amount", 
             "Date", 
             "Payment Method", 
-            "Cashier"
+        
         };
         
-        javax.swing.table.DefaultTableModel model = 
-            new javax.swing.table.DefaultTableModel(columns, 0) {
+        DefaultTableModel model = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return false;  // Make table read-only
             }
         };
         
         transactiontbl.setModel(model);
         
+        // Set column widths
         transactiontbl.getColumnModel().getColumn(0).setPreferredWidth(80);
         transactiontbl.getColumnModel().getColumn(1).setPreferredWidth(150);
         transactiontbl.getColumnModel().getColumn(2).setPreferredWidth(100);
         transactiontbl.getColumnModel().getColumn(3).setPreferredWidth(120);
         transactiontbl.getColumnModel().getColumn(4).setPreferredWidth(120);
-        transactiontbl.getColumnModel().getColumn(5).setPreferredWidth(100);
-    }
+        
+            }
 
-    private void loadTransactionsTable() {
+        private void loadTransactionsTable() {
         DefaultTableModel model = (DefaultTableModel) transactiontbl.getModel();
-        model.setRowCount(0);
+        model.setRowCount(0);  // Clear the table
 
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -224,10 +226,9 @@ public class tblsreports extends javax.swing.JFrame {
             conf dbConfig = new conf();
             conn = dbConfig.connectDB();
             
-            String sql = "SELECT t.transaction_id, t.customer_name, t.total_amount, " +
-                        "t.transaction_date, t.payment_method, u.username as cashier " +
+             String sql = "SELECT t.transaction_id, t.customer_name, t.total_amount, " +
+                        "t.transaction_date, t.payment_method " +
                         "FROM tbl_transactions t " +
-                        "JOIN tbl_users u ON t.u_id = u.u_id " +
                         "ORDER BY t.transaction_date DESC";
                         
             pstmt = conn.prepareStatement(sql);
@@ -240,7 +241,7 @@ public class tblsreports extends javax.swing.JFrame {
                     String.format("₱%.2f", rs.getDouble("total_amount")),
                     rs.getString("transaction_date"),
                     rs.getString("payment_method"),
-                    rs.getString("cashier")
+                    
                 };
                 model.addRow(row);
             }
@@ -257,7 +258,9 @@ public class tblsreports extends javax.swing.JFrame {
                 e.printStackTrace();
             }
         
-        }
+    }
+
+      
     }//GEN-LAST:event_searchActionPerformed
 
     /**
