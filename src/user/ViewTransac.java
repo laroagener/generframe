@@ -51,14 +51,12 @@ public class ViewTransac extends javax.swing.JFrame {
             }
             
             // Only show current user's transactions
-           String sql = "SELECT t.transaction_id, t.customer_name, t.total_amount, t.transaction_date, " +
+          String sql = "SELECT t.transaction_id, t.customer_name, t.total_amount, t.transaction_date, " +
     "t.payment_method " +
     "FROM tbl_transactions t " +
     "ORDER BY t.transaction_date DESC";
                 
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, Session.getInstance().getU_id());
-            rs = pstmt.executeQuery();
+pstmt = conn.prepareStatement(sql);
 
             while (rs.next()) {
                 Object[] row = {
