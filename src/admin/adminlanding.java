@@ -8,6 +8,7 @@ package admin;
 import config.Session;
 import javax.swing.JOptionPane;
 import admin.ManageUsers;
+
 /**
  *
  * @author SCC-28
@@ -141,7 +142,9 @@ public class adminlanding extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-     JOptionPane.showMessageDialog(this, "Reports feature coming soon!");
+     admin.tblsreports reports = new admin.tblsreports();  // ← FIXED: tblsreports not Reports
+        reports.setVisible(true);
+        this.dispose();
 }
 
 // Logout button

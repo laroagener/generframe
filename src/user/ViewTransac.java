@@ -35,7 +35,7 @@ public class ViewTransac extends javax.swing.JFrame {
      private void loadMyTransactions() {
         DefaultTableModel model = (DefaultTableModel) transactiontbl.getModel();
         model.setRowCount(0);
-        model.setColumnIdentifiers(new String[]{"Trans ID", "Customer", "Total Amount", "Date", "Payment Method", "Cashier"});
+        model.setColumnIdentifiers(new String[]{"Trans ID", "Customer", "Total Amount", "Date", "Payment Method"});
 
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -51,11 +51,10 @@ public class ViewTransac extends javax.swing.JFrame {
             }
             
             // Only show current user's transactions
-            String sql = "SELECT t.transaction_id, t.customer_name, t.total_amount, t.transaction_date, " +
-                "t.payment_method, u.username as cashier " +
-                "FROM tbl_transactions t JOIN tbl_users u ON t.u_id = u.u_id " +
-                "WHERE t.u_id = ? " +
-                "ORDER BY t.transaction_date DESC";
+           String sql = "SELECT t.transaction_id, t.customer_name, t.total_amount, t.transaction_date, " +
+    "t.payment_method " +
+    "FROM tbl_transactions t " +
+    "ORDER BY t.transaction_date DESC";
                 
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, Session.getInstance().getU_id());
@@ -68,7 +67,6 @@ public class ViewTransac extends javax.swing.JFrame {
                     String.format("%.2f", rs.getDouble("total_amount")),
                     rs.getString("transaction_date"),
                     rs.getString("payment_method"),
-                    rs.getString("cashier")
                 };
                 model.addRow(row);
             }

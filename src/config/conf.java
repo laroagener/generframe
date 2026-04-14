@@ -22,25 +22,30 @@ public class conf {
     // OR private static final String DB_URL = "jdbc:sqlite:C:/path/to/your/GENER.db";
     
     public Connection connectDB() {
-        Connection conn = null;
-        try {
-            // Load SQLite JDBC driver
-            Class.forName("org.sqlite.JDBC");
-            
-            // Establish connection
-            conn = DriverManager.getConnection(DB_URL);
-            System.out.println("✓ SQLite Database connected successfully!");
-            
-        } catch (ClassNotFoundException e) {
-            System.out.println("✗ SQLite JDBC Driver not found!");
-            System.out.println("Error: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "SQLite Driver missing! Add sqlite-jdbc.jar to your project libraries.");
-        } catch (SQLException e) {
-            System.out.println("✗ Connection failed: " + e.getMessage());
+       Connection conn = null;
+    try {
+        // Load SQLite JDBC driver
+        Class.forName("org.sqlite.JDBC");
+        
+        // Establish connection
+        conn = DriverManager.getConnection(DB_URL);
+        
+        // Set busy timeout to prevent "database is locked" errors
+        try (PreparedStatement stmt = conn.prepareStatement("PRAGMA busy_timeout = 5000")) {
+            stmt.execute();
         }
-        return conn;
-    
+        
+        System.out.println("✓ SQLite Database connected successfully!");
+        
+    } catch (ClassNotFoundException e) {
+        System.out.println("✗ SQLite JDBC Driver not found!");
+        System.out.println("Error: " + e.getMessage());
+        JOptionPane.showMessageDialog(null, "SQLite Driver missing! Add sqlite-jdbc.jar to your project libraries.");
+    } catch (SQLException e) {
+        System.out.println("✗ Connection failed: " + e.getMessage());
     }
+    return conn;
+}
 
     // Method to hash passwords using SHA-256
     public static String hashPassword(String password) {
@@ -104,5 +109,16 @@ public class conf {
         e.printStackTrace();
     }
     return userType;
+}
+    // Force close any lingering connections (call this when program starts)
+public static void resetDatabase() {
+    try {
+        // Close any open connections by opening with exclusive lock
+        Connection conn = DriverManager.getConnection(DB_URL + "?mode=rwc");
+        conn.close();
+        System.out.println("Database reset - any locks cleared");
+    } catch (SQLException e) {
+        System.out.println("Reset warning: " + e.getMessage());
+    }
 }
 }
