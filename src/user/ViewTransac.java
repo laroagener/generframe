@@ -35,7 +35,9 @@ public class ViewTransac extends javax.swing.JFrame {
      private void loadMyTransactions() {
         DefaultTableModel model = (DefaultTableModel) transactiontbl.getModel();
         model.setRowCount(0);
-        model.setColumnIdentifiers(new String[]{"Trans ID", "Customer", "Total Amount", "Date", "Payment Method"});
+        model.setColumnIdentifiers(new String[]{
+    "Trans ID", "Product ID", "Quantity", "Total Price", "Date"
+});
 
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -57,6 +59,7 @@ public class ViewTransac extends javax.swing.JFrame {
     "ORDER BY t.transaction_date DESC";
                 
 pstmt = conn.prepareStatement(sql);
+rs = pstmt.executeQuery();
 
             while (rs.next()) {
                 Object[] row = {
@@ -224,28 +227,23 @@ pstmt = conn.prepareStatement(sql);
             conn = dbConfig.connectDB();
             
             // Search only current user's transactions
-            String sql = "SELECT t.transaction_id, t.customer_name, t.total_amount, t.transaction_date, " +
-                "t.payment_method, u.username as cashier " +
-                "FROM tbl_transactions t JOIN tbl_users u ON t.u_id = u.u_id " +
-                "WHERE t.u_id = ? AND (t.customer_name LIKE ? OR CAST(t.transaction_id AS TEXT) LIKE ?) " +
-                "ORDER BY t.transaction_date DESC";
+            String sql = "SELECT transaction_id, quantity, total_price, date " +
+             "FROM tbl_transactions " +
+             "WHERE user_id = ? AND (CAST(transaction_id AS TEXT) LIKE ? OR CAST(total_price AS TEXT) LIKE ?) " +
+             "ORDER BY date DESC";
                 
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, Session.getInstance().getU_id());
-            String pattern = "%" + keyword + "%";
-            pstmt.setString(2, pattern);
-            pstmt.setString(3, pattern);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
                 Object[] row = {
                     rs.getInt("transaction_id"),
-                    rs.getString("customer_name"),
-                    String.format("%.2f", rs.getDouble("total_amount")),
-                    rs.getString("transaction_date"),
-                    rs.getString("payment_method"),
-                    rs.getString("cashier")
-                };
+                    rs.getInt("product_id"),
+                    rs.getInt("quantity"),
+                    String.format("%.2f", rs.getDouble("total_price")),
+                    rs.getString("date")
+};
                 model.addRow(row);
             }
         } catch (Exception e) {
